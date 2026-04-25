@@ -8,7 +8,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ### Changed
 
-- `@commons-oss/brand` 1.0.0 → 1.1.0: widened `OSS` in wordmark (size + letter-spacing) so caps stay legible when General Sans isn't loaded and a system font falls in. SVG lockups updated; PNG wordmark exports are now stale and need regeneration from Figma/Affinity with General Sans installed. Mark, color, typeface unchanged.
+- `@commons-oss/brand` 1.0.0 → 1.1.0: widened `OSS` in wordmark (size + letter-spacing) so caps stay legible when General Sans isn't loaded and a system font falls in. SVG lockups updated; PNG wordmark exports regenerated with General Sans Medium installed via `rsvg-convert`. Mark, color, typeface unchanged.
 
 ### Added
 
