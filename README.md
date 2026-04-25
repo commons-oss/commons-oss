@@ -9,11 +9,15 @@
   Open-source tools, held in common, for the people who run clubs.
 </p>
 
+<p align="center">
+  <a href="./README.de.md">Deutsch</a>
+</p>
+
 ---
 
-Commons OSS is an open-source toolkit for Vereine, clubs, and associations. Sportvereine, Feuerwehr, Hobbyvereine, nonprofits. DACH-first, globally legible.
+Commons OSS is an open-source toolkit for clubs, associations, and nonprofits. Sports clubs, fire departments, hobby groups, charities, community organizations. Built for the DACH region first (Germany, Austria, Switzerland), written to work anywhere.
 
-The first product is an attendance tracker. Later products: member CRM, dues, events, funding reports.
+The first product is an attendance tracker. Later products: member directory, dues and invoicing, events, funding reports.
 
 ## Status
 
@@ -21,7 +25,7 @@ Bootstrapping. The brand is locked at v1.0 (2026-04-25). No apps shipped yet.
 
 ## What's in this repo
 
-This is a pnpm + Turborepo monorepo.
+A pnpm + Turborepo monorepo.
 
 ```
 commons-oss/
@@ -50,10 +54,10 @@ For new apps in `apps/*`:
 
 - Next.js 16 (App Router, `proxy.ts` pattern)
 - Postgres
-- [Logto](https://logto.io) for auth (self-hostable, multi-tenant via Logto orgs)
+- [Logto](https://logto.io) for auth (self-hostable, multi-tenant via Logto organizations)
 - shadcn/ui + Tailwind CSS
 - next-intl (default locale `de`, also `en`)
-- Self-hostable via Docker, Vercel-deployable as managed option
+- Self-hostable via Docker, Vercel-deployable as a managed option
 
 ## Brand
 
@@ -63,7 +67,7 @@ See [`BRAND.md`](./BRAND.md). The mark, color, and typography are frozen. Use th
 
 [AGPL-3.0-or-later](./LICENSE).
 
-A commercial license is available for organizations that cannot comply with AGPL terms. Vereine, nonprofits, NGOs, charities, schools, and OSS projects can request the commercial license fee waived.
+A commercial license is available for organizations that cannot comply with AGPL terms. Clubs, nonprofits, NGOs, charities, schools, and other open-source projects can request the commercial license fee be waived.
 
 Contributions require signing a CLA (template TBD).
 
