@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="packages/brand/logo/svg/lockup-horizontal.svg" alt="Commons OSS" width="320" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="packages/brand/logo/svg/lockup-horizontal-on-dark.svg">
+    <img src="packages/brand/logo/svg/lockup-horizontal.svg" alt="Commons OSS" width="320">
+  </picture>
 </p>
 
 <p align="center">
