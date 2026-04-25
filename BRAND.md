@@ -118,4 +118,8 @@ For Tailwind v4 / shadcn/ui setups, use these custom properties:
 
 ## Versioning
 
-The brand is at v1.0 as of 2026-04-25. Material changes (new color, new mark, new typography) bump the major version and require a note in `CHANGELOG.md` at the repo root.
+The brand is at v1.1 as of 2026-04-25. Material changes (new color, new mark, new typography) bump the major version and require a note in `CHANGELOG.md` at the repo root.
+
+### Changes since v1.0
+
+- **v1.1** (2026-04-25) — `OSS` in the wordmark widened (font-size 29→32px horizontal, 22→24px vertical; letter-spacing 0.6→1.8 horizontal, 0.7→1.5 vertical). Restores caps legibility when General Sans is not loaded and a system fallback renders. Mark, color, typeface unchanged.

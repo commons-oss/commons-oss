@@ -12,5 +12,5 @@
     <circle cx="0" cy="0" r="7.5" fill="#3f7050"/>
   </g>
   <text x="110" y="180" text-anchor="middle" font-family="'General Sans', 'Söhne', 'Inter', system-ui, sans-serif" font-size="28" font-weight="500" letter-spacing="-0.5" fill="#1f2937">Commons</text>
-  <text x="110" y="210" text-anchor="middle" font-family="'General Sans', 'Söhne', 'Inter', system-ui, sans-serif" font-size="22" font-weight="500" letter-spacing="0.7" fill="#6b7280">OSS</text>
+  <text x="110" y="210" text-anchor="middle" font-family="'General Sans', 'Söhne', 'Inter', system-ui, sans-serif" font-size="24" font-weight="500" letter-spacing="1.5" fill="#6b7280">OSS</text>
 </svg>
