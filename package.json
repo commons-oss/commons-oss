@@ -1,0 +1,23 @@
+{
+  "name": "commons-oss",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Open-source toolkit for Vereine, clubs, and associations.",
+  "homepage": "https://github.com/commons-oss/commons-oss",
+  "license": "AGPL-3.0-or-later",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3"
+  }
+}

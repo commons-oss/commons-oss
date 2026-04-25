@@ -1,0 +1,15 @@
+/*
+ * Commons OSS brand tokens.
+ * Canonical values mirror BRAND.md at the repo root.
+ * Material changes bump the package major version.
+ */
+
+:root {
+  --brand-slate: #1f2937;
+  --brand-forest: #3f7050;
+  --brand-forest-bright: #4a8a5f;
+  --brand-mute: #6b7280;
+  --brand-border: #e5e7eb;
+  --brand-surface: #ffffff;
+  --brand-surface-dark: #1f2937;
+}
