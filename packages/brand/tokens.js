@@ -19,3 +19,13 @@ export const wordmark = Object.freeze({
   case: "title",
   ossColor: "#6b7280",
 });
+
+/*
+ * UI status tokens (NOT brand tokens). Use for semantic state:
+ * ok = present, warn = excused, bad = absent.
+ */
+export const status = Object.freeze({
+  ok: { light: "#3f7050", dark: "#4a8a5f" },
+  warn: { light: "#b88516", dark: "#d4a04a" },
+  bad: { light: "#a23a3a", dark: "#d97a7a" },
+});

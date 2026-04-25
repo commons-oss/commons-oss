@@ -22,20 +22,28 @@ Inside this monorepo:
 ### CSS variables
 
 ```css
-@import "@commons-oss/brand/tokens.css";
+@import "@commons-oss/brand/tokens.css";   /* brand tokens */
+@import "@commons-oss/brand/status.css";   /* UI status tokens (ok/warn/bad) */
 
 .button {
   background: var(--brand-forest);
   color: var(--brand-surface);
 }
+
+.attendance-row[data-status="present"]  { background: var(--status-ok); }
+.attendance-row[data-status="excused"]  { background: var(--status-warn); }
+.attendance-row[data-status="absent"]   { background: var(--status-bad); }
 ```
+
+`tokens.css` exposes brand tokens (governed by `BRAND.md`, do not change without bumping the brand major version). `status.css` exposes semantic UI tokens for state (ok / warn / bad), which adapt to `prefers-color-scheme: dark` and to a `.dark` class on a parent element. Status tokens are not brand tokens.
 
 ### JS / TS tokens
 
 ```ts
-import { colors, typography, wordmark } from "@commons-oss/brand";
+import { colors, typography, wordmark, status } from "@commons-oss/brand";
 
-console.log(colors.forest); // "#3f7050"
+console.log(colors.forest);     // "#3f7050"
+console.log(status.warn.light); // "#b88516"
 ```
 
 ### Logo files

@@ -1,0 +1,31 @@
+/*
+ * Commons OSS UI status tokens.
+ *
+ * These are NOT brand tokens. They are semantic UI colors for state:
+ * ok (anwesend / present), warn (entschuldigt / excused), bad (abwesend / absent).
+ * Brand tokens live in tokens.css and are governed by BRAND.md.
+ *
+ * Light values are the default. Dark values apply via:
+ *   - prefers-color-scheme: dark
+ *   - .dark class on a parent (shadcn / Tailwind convention)
+ */
+
+:root {
+  --status-ok: #3f7050;
+  --status-warn: #b88516;
+  --status-bad: #a23a3a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --status-ok: #4a8a5f;
+    --status-warn: #d4a04a;
+    --status-bad: #d97a7a;
+  }
+}
+
+.dark {
+  --status-ok: #4a8a5f;
+  --status-warn: #d4a04a;
+  --status-bad: #d97a7a;
+}

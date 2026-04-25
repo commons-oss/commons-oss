@@ -6,6 +6,10 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased]
 
+### Added
+
+- `@commons-oss/brand` 1.1.0 → 1.2.0: semantic UI status tokens — `ok` (anwesend / present), `warn` (entschuldigt / excused), `bad` (abwesend / absent). Each has light + dark values. Exposed as `status.css` (CSS variables, adapts to `prefers-color-scheme` and `.dark` class) and as `status` export in the JS/TS API. These are UI tokens, not brand tokens, and live alongside the brand tokens without modifying them.
+
 ### Changed
 
 - `@commons-oss/brand` 1.0.0 → 1.1.0: widened `OSS` in wordmark (size + letter-spacing) so caps stay legible when General Sans isn't loaded and a system font falls in. SVG lockups updated; PNG wordmark exports regenerated with General Sans Medium installed via `rsvg-convert`. Mark, color, typeface unchanged.
