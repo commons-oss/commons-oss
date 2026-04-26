@@ -13,3 +13,4 @@
  * Everywhere else, use `withTenant`.
  */
 export { getClient, getDb } from "./client.ts";
+export { getAdminClient, getAdminDb, closeAdminClient } from "./admin-client.ts";

@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { getDb } from "@commons-oss/db/internal";
+import { getAdminDb } from "@commons-oss/db/internal";
 import { schema } from "@commons-oss/db";
 import { getConfig } from "../config.ts";
 import type { AuthProvider, SignInResult } from "../types.ts";
@@ -43,7 +43,7 @@ export class StubProvider implements AuthProvider {
       throw new Error("[stub-auth] callback missing userId or orgId");
     }
 
-    const db = getDb();
+    const db = getAdminDb();
     const [hit] = await db
       .select({
         userId: schema.user.id,
@@ -82,7 +82,7 @@ export class StubProvider implements AuthProvider {
   }
 
   private async listMembershipChoices(): Promise<MembershipChoice[]> {
-    const db = getDb();
+    const db = getAdminDb();
     const rows = await db
       .select({
         userId: schema.user.id,
