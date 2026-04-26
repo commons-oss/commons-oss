@@ -110,6 +110,23 @@ Conventional commits are enforced by commitlint + husky.
 - **No `Co-Authored-By:` trailers.** Don't add Claude or any agent as a
   co-author.
 
+## Before pushing
+
+CI runs `format:check`, `lint`, `type-check`, `test`, and the RLS guard.
+Husky hooks deliberately don't gate these — they're slow enough that
+forcing them on every commit hurts iteration. So the responsibility is
+on the agent / contributor.
+
+Before `git push`, run from the repo root:
+
+```bash
+pnpm format:check && pnpm lint && pnpm -r --if-present run type-check && pnpm test
+```
+
+If `format:check` fails, run `pnpm format` and amend or add a follow-up
+commit. Don't push and let CI tell you what you already could've caught
+locally.
+
 ## Brand handover
 
 ## Brand state — locked as of 2026-04-25
