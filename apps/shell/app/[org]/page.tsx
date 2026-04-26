@@ -1,7 +1,6 @@
-import { eq } from "drizzle-orm";
-import { getTranslations } from "next-intl/server";
-import { schema, withTenant } from "@commons-oss/db";
+import { redirect } from "next/navigation";
 import { requireSession } from "~/src/ctx";
+import { getUserPersonas } from "~/src/personas";
 
 interface Props {
   params: Promise<{ org: string }>;
@@ -10,45 +9,15 @@ interface Props {
 export const dynamic = "force-dynamic";
 
 /**
- * Phase 1 placeholder dashboard. Demonstrates the read path:
- *   session → withTenant → RLS-scoped query.
- *
- * The query selects from `org` filtered by id; under RLS this returns
- * the row only because `app.current_org` GUC matches. With a missing GUC
- * the same query returns 0 rows — that's the floor.
+ * Role-defaulted landing. Phase 1 only ships the trainer surface, so
+ * coaches go to /today; officers (and anyone else) fall through to
+ * /profile until the admin surface lands in Phase 2.
  */
-export default async function OrgDashboard({ params }: Props) {
+export default async function OrgLanding({ params }: Props) {
   const { org } = await params;
   const session = await requireSession(org);
-  const t = await getTranslations("shell");
+  const personas = await getUserPersonas(session.userId, session.orgId);
 
-  const rows = await withTenant(
-    { org: { id: session.orgId }, user: { id: session.userId } },
-    (db) =>
-      db
-        .select({ id: schema.org.id, name: schema.org.name, slug: schema.org.slug })
-        .from(schema.org)
-        .where(eq(schema.org.id, session.orgId)),
-  );
-
-  const o = rows[0];
-  const displayName = o?.name ?? t("unknownOrg");
-
-  return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>{displayName}</h1>
-      <p style={{ color: "#666" }}>
-        {t.rich("signedInAs", {
-          sub: session.logtoSub,
-          slug: o?.slug ?? "",
-          code: (chunks) => <code>{chunks}</code>,
-        })}
-      </p>
-      <p style={{ color: "#999", fontSize: 12 }}>
-        {t.rich("phasePlaceholder", {
-          code: (chunks) => <code>{chunks}</code>,
-        })}
-      </p>
-    </div>
-  );
+  if (personas.isCoach) redirect(`/${org}/today`);
+  redirect(`/${org}/profile`);
 }

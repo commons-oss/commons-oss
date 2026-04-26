@@ -8,6 +8,13 @@
       "when": 1777207483803,
       "tag": "0000_flashy_edwin_jarvis",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777218205861,
+      "tag": "0001_easy_the_santerians",
+      "breakpoints": true
     }
   ]
 }

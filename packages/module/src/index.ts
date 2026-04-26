@@ -6,6 +6,7 @@ export type {
   ModuleDefinition,
   ModuleId,
   NavItem,
+  NavPersona,
   Permission,
   PermissionAction,
   RouteSpec,

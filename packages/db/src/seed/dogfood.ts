@@ -99,6 +99,57 @@ async function main(): Promise<void> {
       kind: "player",
     });
 
+    // 5b. Small roster so attendance demos aren't a list of one.
+    //     Generic placeholder names — keep boring, this is a public demo seed.
+    const u15Roster = [
+      [1, "Lukas", "Berger"],
+      [4, "Stefan", "Pichler"],
+      [6, "Tobias", "Wagner"],
+      [9, "Florian", "Hofer"],
+      [10, "Daniel", "Reiter"],
+      [11, "Markus", "Steiner"],
+      [14, "Jonas", "Köhler"],
+      [17, "Paul", "Lenz"],
+    ] as const;
+    for (const [jersey, first, last] of u15Roster) {
+      const p = await upsertPerson(db, {
+        orgId: demoOrg.id,
+        firstName: first,
+        lastName: last,
+        bornOn: "2010-06-15",
+        jerseyNumber: jersey,
+      });
+      await upsertMembership(db, {
+        orgId: demoOrg.id,
+        teamId: u15.id,
+        personId: p.id,
+        kind: "player",
+      });
+    }
+
+    const reserveRoster = [
+      [2, "Andreas", "Gruber"],
+      [5, "Patrick", "Müller"],
+      [7, "Christian", "Bauer"],
+      [8, "Michael", "Schmid"],
+      [13, "Sebastian", "Pirker"],
+    ] as const;
+    for (const [jersey, first, last] of reserveRoster) {
+      const p = await upsertPerson(db, {
+        orgId: demoOrg.id,
+        firstName: first,
+        lastName: last,
+        bornOn: "1995-03-20",
+        jerseyNumber: jersey,
+      });
+      await upsertMembership(db, {
+        orgId: demoOrg.id,
+        teamId: reserve.id,
+        personId: p.id,
+        kind: "player",
+      });
+    }
+
     // 6. User + org_member + multi-role
     const maxUser = await upsertUser(db, {
       logtoSub: "dogfood|max-mustermann",
@@ -223,6 +274,7 @@ async function upsertPerson(
     firstName: string;
     lastName: string;
     bornOn?: string;
+    jerseyNumber?: number;
     attributionExternalId?: string;
   },
 ): Promise<{ id: string }> {

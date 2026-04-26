@@ -41,6 +41,9 @@ importers:
 
   apps/shell:
     dependencies:
+      '@commons-oss/attendance-tracker':
+        specifier: workspace:*
+        version: link:../../packages/modules/attendance-tracker
       '@commons-oss/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -232,6 +235,43 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.19.17)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/modules/attendance-tracker:
+    dependencies:
+      '@commons-oss/db':
+        specifier: workspace:*
+        version: link:../../db
+      '@commons-oss/module':
+        specifier: workspace:*
+        version: link:../../module
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(postgres@3.4.9)
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.9
+    devDependencies:
+      '@commons-oss/config-eslint':
+        specifier: workspace:*
+        version: link:../../config-eslint
+      '@commons-oss/config-tsconfig':
+        specifier: workspace:*
+        version: link:../../config-tsconfig
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.19.17
+      dotenv-cli:
+        specifier: ^11.0.0
+        version: 11.0.0
+      eslint:
+        specifier: ^9.18.0
+        version: 9.39.4(jiti@2.6.1)
+      tsx:
+        specifier: ^4.20.6
+        version: 4.21.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
 
 packages:
 

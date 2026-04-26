@@ -2,6 +2,13 @@
   "shell": {
     "appName": "Commons",
     "noModules": "No modules registered.",
+    "navProfile": "Profile",
+    "profileTitle": "Profile",
+    "profileSignOut": "Sign out",
+    "profileFooter": "Commons OSS",
+    "profileLocale": "Language",
+    "profileLocaleHint": "Language switching ships in Phase 2.",
+    "profileOrg": "Org",
     "signedInAs": "Signed in as <code>{sub}</code> on tenant <code>{slug}</code>.",
     "phasePlaceholder": "Phase 1 shell. Modules will appear here as they're registered in <code>apps/shell/modules.ts</code>.",
     "unknownOrg": "Unknown"

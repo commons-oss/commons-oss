@@ -12,6 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@commons-oss/attendance-tracker": "workspace:*",
     "@commons-oss/auth": "workspace:*",
     "@commons-oss/brand": "workspace:*",
     "@commons-oss/db": "workspace:*",

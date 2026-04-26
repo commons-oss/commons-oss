@@ -19,7 +19,7 @@
     "db:generate": "pnpm --filter @commons-oss/db db:generate",
     "db:push": "pnpm --filter @commons-oss/db db:push",
     "db:migrate": "pnpm --filter @commons-oss/db db:migrate",
-    "db:seed": "pnpm --filter @commons-oss/db db:seed:roles && pnpm --filter @commons-oss/db db:seed:dogfood",
+    "db:seed": "pnpm --filter @commons-oss/db db:seed:roles && pnpm --filter @commons-oss/db db:seed:dogfood && pnpm --filter @commons-oss/attendance-tracker db:seed:events",
     "db:reset": "pnpm --filter @commons-oss/db db:reset",
     "test": "turbo run test",
     "prepare": "husky",

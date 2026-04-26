@@ -35,6 +35,13 @@ export interface ModuleContext<TPerm extends Permission = Permission> {
   hasPerm: (p: TPerm) => boolean;
 }
 
+/**
+ * Which user persona this nav item is for. Shell filters items by the
+ * current user's roles before rendering. `'both'` (or omitted) shows for
+ * everyone — use this for shared destinations like reports.
+ */
+export type NavPersona = "coach" | "officer" | "both";
+
 export interface NavItem {
   id: string;
   label: LocalizedString;
@@ -43,6 +50,8 @@ export interface NavItem {
   icon?: string;
   group?: "main" | "admin";
   order?: number;
+  /** Defaults to `'both'`. */
+  persona?: NavPersona;
 }
 
 export interface RouteSpec {
