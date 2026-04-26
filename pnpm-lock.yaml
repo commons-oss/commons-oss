@@ -44,6 +44,9 @@ importers:
       '@commons-oss/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@commons-oss/brand':
+        specifier: workspace:*
+        version: link:../../packages/brand
       '@commons-oss/db':
         specifier: workspace:*
         version: link:../../packages/db

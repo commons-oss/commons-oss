@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@commons-oss/auth": "workspace:*",
+    "@commons-oss/brand": "workspace:*",
     "@commons-oss/db": "workspace:*",
     "@commons-oss/module": "workspace:*",
     "@hono/zod-openapi": "^0.19.10",

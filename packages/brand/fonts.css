@@ -1,0 +1,16 @@
+/*
+ * Commons OSS web fonts.
+ * Plus Jakarta Sans (variable), self-hosted under OFL.
+ * License + attribution: ./fonts/plus-jakarta-sans/{OFL,AUTHORS}.txt
+ *
+ * Importing this file declares the @font-face rules; the typography
+ * token in `tokens.css` references the resulting family name.
+ */
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("./fonts/plus-jakarta-sans/PlusJakartaSans[wght].woff2") format("woff2-variations");
+}

@@ -9,9 +9,11 @@ export const colors = Object.freeze({
 });
 
 export const typography = Object.freeze({
-  primary: "General Sans",
-  fallback: "'General Sans', 'Söhne', 'Inter', system-ui, sans-serif",
-  source: "https://www.fontshare.com/fonts/general-sans",
+  primary: "Plus Jakarta Sans",
+  fallback:
+    "'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+  license: "OFL-1.1",
+  source: "https://github.com/tokotype/PlusJakartaSans",
 });
 
 export const wordmark = Object.freeze({

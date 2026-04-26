@@ -9,8 +9,9 @@ export declare const colors: Readonly<{
 }>;
 
 export declare const typography: Readonly<{
-  primary: "General Sans";
+  primary: "Plus Jakarta Sans";
   fallback: string;
+  license: "OFL-1.1";
   source: string;
 }>;
 

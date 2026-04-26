@@ -1,6 +1,6 @@
 {
   "name": "@commons-oss/brand",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Commons OSS brand assets: logo files, color tokens, typography references.",
   "license": "AGPL-3.0-or-later",
   "repository": {
@@ -13,7 +13,9 @@
   ],
   "files": [
     "logo",
+    "fonts",
     "tokens.css",
+    "fonts.css",
     "status.css",
     "tokens.js",
     "tokens.d.ts",
@@ -27,7 +29,9 @@
       "default": "./tokens.js"
     },
     "./tokens.css": "./tokens.css",
+    "./fonts.css": "./fonts.css",
     "./status.css": "./status.css",
-    "./logo/*": "./logo/*"
+    "./logo/*": "./logo/*",
+    "./fonts/*": "./fonts/*"
   }
 }

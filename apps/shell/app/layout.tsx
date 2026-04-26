@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import "./globals.css";
 
 export async function generateMetadata() {
   const t = await getTranslations("metadata");

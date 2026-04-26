@@ -35,6 +35,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ### Changed
 
+- `@commons-oss/brand` 1.2.0 → 2.0.0 **(breaking)**: primary typeface swapped from General Sans to **Plus Jakarta Sans**. Reason: Fontshare EULA forbids redistribution of General Sans woff2 files in third-party repositories, incompatible with self-hosting from an OSS monorepo. Plus Jakarta Sans is OFL-1.1 (freely self-hostable + downstream-redistributable) and is a close visual match in the same neo-grotesque humanist family. Variable woff2 (61 KB, weights 200-800) bundled at `fonts/plus-jakarta-sans/` with `OFL.txt` and `AUTHORS.txt`. New `fonts.css` export ships the `@font-face` declaration. New `--brand-font-sans` CSS variable in `tokens.css`. `typography.license` field changed from `"custom-fontshare"` to `"OFL-1.1"`. Mark and color unchanged. Brand spec bumped to v2.0 — see `BRAND.md`.
+- `apps/shell` — wired brand fonts and tokens via new `app/globals.css` (imports `@commons-oss/brand/fonts.css`, `tokens.css`, `status.css`; sets body `font-family: var(--brand-font-sans)`). Imported into root layout.
+
 - `@commons-oss/brand` 1.0.0 → 1.1.0: widened `OSS` in wordmark (size + letter-spacing) so caps stay legible when General Sans isn't loaded and a system font falls in. SVG lockups updated; PNG wordmark exports regenerated with General Sans Medium installed via `rsvg-convert`. Mark, color, typeface unchanged.
 
 ### Added

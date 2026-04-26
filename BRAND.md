@@ -12,10 +12,11 @@ The Commons OSS mark is an anchor ring: eight slate dots arranged in a circle ar
 
 ## The wordmark
 
-`Commons OSS` is set in **General Sans Medium**, title case, with `OSS` slightly smaller than `Commons` and rendered in the muted gray (`#6b7280`).
+`Commons OSS` is set in **Plus Jakarta Sans Medium (500)**, title case, with `OSS` slightly smaller than `Commons` and rendered in the muted gray (`#6b7280`).
 
-- Primary typeface: **General Sans Medium** ([fontshare.com/fonts/general-sans](https://www.fontshare.com/fonts/general-sans), free).
-- Fallback stack: `'General Sans', 'Söhne', 'Inter', system-ui, sans-serif`.
+- Primary typeface: **Plus Jakarta Sans** ([github.com/tokotype/PlusJakartaSans](https://github.com/tokotype/PlusJakartaSans)). Self-hosted as a variable woff2 in `packages/brand/fonts/plus-jakarta-sans/`. Released under the SIL Open Font License 1.1 (see the bundled `OFL.txt`).
+- Fallback stack: `'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif`.
+- We previously specified General Sans (Fontshare). Swapped because the Fontshare EULA forbids redistribution of the font files in third-party repositories — incompatible with self-hosting from an OSS monorepo. Plus Jakarta Sans is a close visual match in the same neo-grotesque humanist family, with an OFL license that allows self-hosting and downstream redistribution.
 - The wordmark always uses title case. Never `commons oss`, never `COMMONS OSS`, never `Commons.OSS`.
 - `OSS` always uppercase. Never `Oss`, never `oss`.
 
@@ -89,7 +90,7 @@ logo/
 
 ## Regenerating PNGs
 
-The PNGs in this repo were generated with cairosvg, which substitutes the system default sans for General Sans. **For production wordmark exports, regenerate from the SVGs in Figma or Affinity with General Sans installed.** The mark-only exports (no text) are correct as-is.
+The PNGs in this repo were generated with cairosvg, which substitutes the system default sans for the brand typeface. **For production wordmark exports, regenerate from the SVGs in Figma or Affinity with Plus Jakarta Sans installed.** The mark-only exports (no text) are correct as-is.
 
 ## Web setup
 
@@ -118,8 +119,9 @@ For Tailwind v4 / shadcn/ui setups, use these custom properties:
 
 ## Versioning
 
-The brand is at v1.1 as of 2026-04-25. Material changes (new color, new mark, new typography) bump the major version and require a note in `CHANGELOG.md` at the repo root.
+The brand is at v2.0 as of 2026-04-26. Material changes (new color, new mark, new typography) bump the major version and require a note in `CHANGELOG.md` at the repo root.
 
 ### Changes since v1.0
 
+- **v2.0** (2026-04-26) — Primary typeface changed from General Sans to Plus Jakarta Sans. Reason: Fontshare EULA forbids redistribution of General Sans woff2 files in third-party repositories, incompatible with self-hosting from an OSS monorepo. Plus Jakarta Sans is OFL-1.1 (freely self-hostable and redistributable) and is a close visual match in the same neo-grotesque humanist family. Mark and color unchanged.
 - **v1.1** (2026-04-25) — `OSS` in the wordmark widened (font-size 29→32px horizontal, 22→24px vertical; letter-spacing 0.6→1.8 horizontal, 0.7→1.5 vertical). Restores caps legibility when General Sans is not loaded and a system fallback renders. Mark, color, typeface unchanged.
