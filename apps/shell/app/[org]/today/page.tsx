@@ -41,10 +41,8 @@ export default async function TodayPage({ params }: Props) {
   );
 
   const upcoming = data
-    ? await withTenant(
-        { org: { id: session.orgId }, user: { id: session.userId } },
-        async (db) =>
-          loadUpcoming(db, session.userId, session.orgId, data.event.id),
+    ? await withTenant({ org: { id: session.orgId }, user: { id: session.userId } }, async (db) =>
+        loadUpcoming(db, session.userId, session.orgId, data.event.id),
       )
     : [];
 
@@ -62,9 +60,7 @@ export default async function TodayPage({ params }: Props) {
           }}
         >
           <div style={{ fontWeight: 500, marginBottom: 4 }}>{t("noActiveSession")}</div>
-          <div style={{ color: "var(--brand-mute)", fontSize: 14 }}>
-            {t("noActiveSessionHint")}
-          </div>
+          <div style={{ color: "var(--brand-mute)", fontSize: 14 }}>{t("noActiveSessionHint")}</div>
         </div>
       </div>
     );
@@ -111,63 +107,61 @@ export default async function TodayPage({ params }: Props) {
         }
       `}</style>
       <div>
-      <header style={{ marginBottom: 16 }}>
+        <header style={{ marginBottom: 16 }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: "var(--brand-mute)",
+              letterSpacing: "0.02em",
+              marginBottom: 6,
+            }}
+          >
+            {team.name}
+            {event.cancelledAt ? <span style={{ marginLeft: 8 }}>· {t("cancelled")}</span> : null}
+          </div>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 24,
+              fontWeight: 500,
+              letterSpacing: "-0.4px",
+              lineHeight: 1.15,
+            }}
+          >
+            {event.title ?? `${kindLabel}, ${dateFmt.format(event.startsAt)}`}
+          </h1>
+          <div
+            style={{
+              marginTop: 6,
+              fontSize: 13,
+              color: "var(--brand-mute)",
+              display: "flex",
+              gap: 12,
+            }}
+          >
+            <span>{timeFmt.format(event.startsAt)}</span>
+            {event.location ? <span>· {event.location}</span> : null}
+          </div>
+        </header>
+
+        <RosterMarker
+          orgSlug={org}
+          eventId={event.id}
+          teamId={team.id}
+          roster={roster}
+          initialMarks={marks}
+        />
+
         <div
           style={{
+            marginTop: 16,
+            textAlign: "center",
             fontSize: 12,
             color: "var(--brand-mute)",
-            letterSpacing: "0.02em",
-            marginBottom: 6,
           }}
         >
-          {team.name}
-          {event.cancelledAt ? (
-            <span style={{ marginLeft: 8 }}>· {t("cancelled")}</span>
-          ) : null}
+          {t("rosterFooter", { count: roster.length })}
         </div>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: 24,
-            fontWeight: 500,
-            letterSpacing: "-0.4px",
-            lineHeight: 1.15,
-          }}
-        >
-          {event.title ?? `${kindLabel}, ${dateFmt.format(event.startsAt)}`}
-        </h1>
-        <div
-          style={{
-            marginTop: 6,
-            fontSize: 13,
-            color: "var(--brand-mute)",
-            display: "flex",
-            gap: 12,
-          }}
-        >
-          <span>{timeFmt.format(event.startsAt)}</span>
-          {event.location ? <span>· {event.location}</span> : null}
-        </div>
-      </header>
-
-      <RosterMarker
-        orgSlug={org}
-        eventId={event.id}
-        teamId={team.id}
-        roster={roster}
-        initialMarks={marks}
-      />
-
-      <div
-        style={{
-          marginTop: 16,
-          textAlign: "center",
-          fontSize: 12,
-          color: "var(--brand-mute)",
-        }}
-      >
-        {t("rosterFooter", { count: roster.length })}
-      </div>
       </div>
 
       <aside className="today-rail" aria-label={t("upcomingTitle")}>
@@ -236,9 +230,7 @@ export default async function TodayPage({ params }: Props) {
             {t("upcomingTitle")}
           </div>
           {upcoming.length === 0 ? (
-            <div style={{ fontSize: 13, color: "var(--brand-mute)" }}>
-              {t("upcomingEmpty")}
-            </div>
+            <div style={{ fontSize: 13, color: "var(--brand-mute)" }}>{t("upcomingEmpty")}</div>
           ) : (
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {upcoming.map((u) => (
@@ -311,10 +303,7 @@ async function loadActiveSession(
   const coachTeams = await db
     .select({ teamId: coreSchema.memberRole.teamId })
     .from(coreSchema.memberRole)
-    .innerJoin(
-      coreSchema.orgMember,
-      eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId),
-    )
+    .innerJoin(coreSchema.orgMember, eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId))
     .innerJoin(coreSchema.role, eq(coreSchema.role.id, coreSchema.memberRole.roleId))
     .where(
       and(
@@ -325,9 +314,7 @@ async function loadActiveSession(
       ),
     );
 
-  const teamIds = coachTeams
-    .map((r) => r.teamId)
-    .filter((id): id is string => id !== null);
+  const teamIds = coachTeams.map((r) => r.teamId).filter((id): id is string => id !== null);
   if (teamIds.length === 0) return null;
 
   const now = new Date();
@@ -418,10 +405,7 @@ async function loadUpcoming(
   const coachTeams = await db
     .select({ teamId: coreSchema.memberRole.teamId })
     .from(coreSchema.memberRole)
-    .innerJoin(
-      coreSchema.orgMember,
-      eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId),
-    )
+    .innerJoin(coreSchema.orgMember, eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId))
     .innerJoin(coreSchema.role, eq(coreSchema.role.id, coreSchema.memberRole.roleId))
     .where(
       and(
@@ -432,9 +416,7 @@ async function loadUpcoming(
       ),
     );
 
-  const teamIds = coachTeams
-    .map((r) => r.teamId)
-    .filter((id): id is string => id !== null);
+  const teamIds = coachTeams.map((r) => r.teamId).filter((id): id is string => id !== null);
   if (teamIds.length === 0) return [];
 
   const now = new Date();

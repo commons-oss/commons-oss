@@ -14,11 +14,7 @@ export const attendanceTracker = defineModule({
   id: ID,
   name: { de: "Anwesenheit", en: "Attendance" },
   version: "0.1.0",
-  perms: [
-    `${ID}.read`,
-    `${ID}.write`,
-    `${ID}.manage`,
-  ] as const,
+  perms: [`${ID}.read`, `${ID}.write`, `${ID}.manage`] as const,
   routes: [
     { path: "today", scope: "org", perms: [`${ID}.read`] },
     { path: "sessions", scope: "org", perms: [`${ID}.read`] },

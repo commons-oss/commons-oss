@@ -186,9 +186,19 @@ function Row({ s, labels }: { s: SessionRow; labels: Labels }) {
             fontVariantNumeric: "tabular-nums",
           }}
         >
-          <span>{s.present} {labels.present}</span>
-          {s.excused > 0 ? <span>{s.excused} {labels.excused}</span> : null}
-          {s.absent > 0 ? <span>{s.absent} {labels.absent}</span> : null}
+          <span>
+            {s.present} {labels.present}
+          </span>
+          {s.excused > 0 ? (
+            <span>
+              {s.excused} {labels.excused}
+            </span>
+          ) : null}
+          {s.absent > 0 ? (
+            <span>
+              {s.absent} {labels.absent}
+            </span>
+          ) : null}
         </div>
       </div>
 

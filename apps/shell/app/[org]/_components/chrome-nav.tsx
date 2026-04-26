@@ -33,15 +33,10 @@ export function ChromeNav({ orgSlug, appName, items }: Props) {
       <style>{chromeStyles}</style>
 
       <aside className="commons-sidebar">
-        <Link
-          href={`/${orgSlug}`}
-          className="commons-brand"
-          aria-label={appName}
-        >
+        <Link href={`/${orgSlug}`} className="commons-brand" aria-label={appName}>
           <BrandGlyph />
           <span>
-            Commons{" "}
-            <span style={{ color: "var(--brand-mute)", letterSpacing: "0.05em" }}>OSS</span>
+            Commons <span style={{ color: "var(--brand-mute)", letterSpacing: "0.05em" }}>OSS</span>
           </span>
         </Link>
         <div className="commons-org">{orgSlug}</div>
@@ -117,14 +112,26 @@ function NavIcon({ name }: { name?: string | undefined }) {
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <rect x="3" y="5" width="18" height="16" rx="2" stroke={stroke} strokeWidth={sw} />
           <path d="M3 9h18M8 3v4M16 3v4" stroke={stroke} strokeWidth={sw} strokeLinecap="round" />
-          <path d="M9 14l2 2 4-4" stroke={stroke} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M9 14l2 2 4-4"
+            stroke={stroke}
+            strokeWidth={sw}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     case "history":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M3 12a9 9 0 1 0 3-6.7" stroke={stroke} strokeWidth={sw} strokeLinecap="round" />
-          <path d="M3 4v5h5" stroke={stroke} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M3 4v5h5"
+            stroke={stroke}
+            strokeWidth={sw}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
           <path d="M12 7v5l3 2" stroke={stroke} strokeWidth={sw} strokeLinecap="round" />
         </svg>
       );
@@ -133,7 +140,12 @@ function NavIcon({ name }: { name?: string | undefined }) {
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="8" r="4" stroke={stroke} strokeWidth={sw} />
-          <path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke={stroke} strokeWidth={sw} strokeLinecap="round" />
+          <path
+            d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"
+            stroke={stroke}
+            strokeWidth={sw}
+            strokeLinecap="round"
+          />
         </svg>
       );
   }

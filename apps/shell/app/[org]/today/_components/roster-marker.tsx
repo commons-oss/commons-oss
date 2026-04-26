@@ -141,7 +141,11 @@ export function RosterMarker({ orgSlug, eventId, teamId, roster, initialMarks }:
             transition: "background 200ms ease",
           }}
         />
-        {saving ? t("saving") : lastSavedAt ? t("savedAuto") : t("progress", { done: 0, total: roster.length })}
+        {saving
+          ? t("saving")
+          : lastSavedAt
+            ? t("savedAuto")
+            : t("progress", { done: 0, total: roster.length })}
         {!saving && allDone && lastSavedAt ? (
           <span style={{ marginLeft: 8 }}>· {t("completed")}</span>
         ) : null}
@@ -355,12 +359,7 @@ function Glyph({ kind, active }: { kind: Status; active: boolean }) {
   }
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M6 6l12 12M18 6L6 18"
-        stroke={color}
-        strokeWidth={stroke}
-        strokeLinecap="round"
-      />
+      <path d="M6 6l12 12M18 6L6 18" stroke={color} strokeWidth={stroke} strokeLinecap="round" />
     </svg>
   );
 }

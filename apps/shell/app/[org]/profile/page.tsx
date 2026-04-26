@@ -32,13 +32,14 @@ export default async function ProfilePage({ params }: Props) {
         .limit(1),
   );
 
-  const initials = (me?.email ?? session.logtoSub)
-    .replace(/[^a-zA-Z]/g, " ")
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((s) => s.charAt(0).toUpperCase())
-    .join("") || "?";
+  const initials =
+    (me?.email ?? session.logtoSub)
+      .replace(/[^a-zA-Z]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((s) => s.charAt(0).toUpperCase())
+      .join("") || "?";
 
   return (
     <div style={{ maxWidth: 480 }}>
@@ -106,11 +107,7 @@ export default async function ProfilePage({ params }: Props) {
         </div>
       </div>
 
-      <form
-        action="/api/auth/sign-out"
-        method="post"
-        style={{ marginTop: 24 }}
-      >
+      <form action="/api/auth/sign-out" method="post" style={{ marginTop: 24 }}>
         <button
           type="submit"
           style={{

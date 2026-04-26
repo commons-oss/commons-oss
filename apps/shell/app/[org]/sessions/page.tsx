@@ -130,10 +130,7 @@ async function loadPastSessions(
   const coachTeams = await db
     .select({ teamId: coreSchema.memberRole.teamId })
     .from(coreSchema.memberRole)
-    .innerJoin(
-      coreSchema.orgMember,
-      eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId),
-    )
+    .innerJoin(coreSchema.orgMember, eq(coreSchema.orgMember.id, coreSchema.memberRole.memberId))
     .innerJoin(coreSchema.role, eq(coreSchema.role.id, coreSchema.memberRole.roleId))
     .where(
       and(
@@ -144,9 +141,7 @@ async function loadPastSessions(
       ),
     );
 
-  const teamIds = coachTeams
-    .map((r) => r.teamId)
-    .filter((id): id is string => id !== null);
+  const teamIds = coachTeams.map((r) => r.teamId).filter((id): id is string => id !== null);
   if (teamIds.length === 0) return [];
 
   const now = new Date();
@@ -182,10 +177,7 @@ async function loadPastSessions(
     })
     .from(attendanceSchema.attendanceEntry)
     .where(inArray(attendanceSchema.attendanceEntry.eventId, eventIds))
-    .groupBy(
-      attendanceSchema.attendanceEntry.eventId,
-      attendanceSchema.attendanceEntry.status,
-    );
+    .groupBy(attendanceSchema.attendanceEntry.eventId, attendanceSchema.attendanceEntry.status);
 
   const counts = new Map<string, { present: number; excused: number; absent: number }>();
   for (const e of entries) {

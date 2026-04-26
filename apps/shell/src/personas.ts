@@ -20,18 +20,12 @@ export interface PersonaFlags {
  * always read live. Cheap query: one join over `member_role` filtered
  * by user+org. RLS still applies via `withTenant`.
  */
-export async function getUserPersonas(
-  userId: string,
-  orgId: string,
-): Promise<PersonaFlags> {
+export async function getUserPersonas(userId: string, orgId: string): Promise<PersonaFlags> {
   return withTenant({ org: { id: orgId }, user: { id: userId } }, async (db) => {
     const rows = await db
       .select({ key: schema.role.key })
       .from(schema.memberRole)
-      .innerJoin(
-        schema.orgMember,
-        eq(schema.orgMember.id, schema.memberRole.memberId),
-      )
+      .innerJoin(schema.orgMember, eq(schema.orgMember.id, schema.memberRole.memberId))
       .innerJoin(schema.role, eq(schema.role.id, schema.memberRole.roleId))
       .where(
         and(

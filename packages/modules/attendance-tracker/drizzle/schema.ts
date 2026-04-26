@@ -1,13 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
-  check,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  unique,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { check, pgEnum, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import {
   externalOrg,
   id,
@@ -49,11 +41,7 @@ export const event = pgTable(
   () => [tenantPolicy("event")],
 ).enableRLS();
 
-export const attendanceStatus = pgEnum("attendance_status", [
-  "present",
-  "excused",
-  "absent",
-]);
+export const attendanceStatus = pgEnum("attendance_status", ["present", "excused", "absent"]);
 
 /**
  * One row per (event, person). Idempotent upsert on the unique key —
@@ -84,16 +72,13 @@ export const attendanceEntry = pgTable(
     recordedByUserId: uuid("recorded_by_user_id")
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),
-    recordedAt: timestamp("recorded_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull().defaultNow(),
     attributionOrgId: uuid("attribution_org_id").references(() => org.id, {
       onDelete: "restrict",
     }),
-    attributionExternalId: uuid("attribution_external_id").references(
-      () => externalOrg.id,
-      { onDelete: "restrict" },
-    ),
+    attributionExternalId: uuid("attribution_external_id").references(() => externalOrg.id, {
+      onDelete: "restrict",
+    }),
     ...timestamps,
   },
   (t) => [
