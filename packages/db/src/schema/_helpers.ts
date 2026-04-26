@@ -13,8 +13,8 @@ export const timestamps = {
 export const id = () => uuid('id').primaryKey().defaultRandom();
 
 /**
- * Tenant policy applied to every verein-scoped table.
- * `commons_app` connections see only rows where verein_id matches the GUC.
+ * Tenant policy applied to every org-scoped table.
+ * `commons_app` connections see only rows where org_id matches the GUC.
  * `commons_admin` (migration runner) bypasses RLS via BYPASSRLS attribute.
  *
  * `current_setting(..., true)` (missing_ok = true) returns NULL when the GUC
@@ -27,13 +27,13 @@ export const tenantPolicy = (tableName: string) =>
     as: 'permissive',
     to: 'commons_app',
     for: 'all',
-    using: sql`verein_id = current_setting('app.current_verein', true)::uuid`,
-    withCheck: sql`verein_id = current_setting('app.current_verein', true)::uuid`,
+    using: sql`org_id = current_setting('app.current_org', true)::uuid`,
+    withCheck: sql`org_id = current_setting('app.current_org', true)::uuid`,
   });
 
 /**
  * Tenant policy with a NULL pass-through — used for system-shared tables
- * like `role` and `role_permission` where verein_id IS NULL marks
+ * like `role` and `role_permission` where org_id IS NULL marks
  * platform-wide rows visible to every tenant.
  */
 export const tenantOrSystemPolicy = (tableName: string) =>
@@ -41,6 +41,6 @@ export const tenantOrSystemPolicy = (tableName: string) =>
     as: 'permissive',
     to: 'commons_app',
     for: 'all',
-    using: sql`verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid`,
-    withCheck: sql`verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid`,
+    using: sql`org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid`,
+    withCheck: sql`org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid`,
   });

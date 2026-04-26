@@ -1,0 +1,18 @@
+{
+  "shell": {
+    "appName": "Commons",
+    "noModules": "No modules registered.",
+    "signedInAs": "Signed in as <code>{sub}</code> on tenant <code>{slug}</code>.",
+    "phasePlaceholder": "Phase 1 shell. Modules will appear here as they're registered in <code>apps/shell/modules.ts</code>.",
+    "unknownOrg": "Unknown"
+  },
+  "auth": {
+    "signInTitle": "Commons OSS — dev sign-in",
+    "stubHint": "Stub auth is enabled (no <code>LOGTO_*</code> env). Pick an identity to sign in as.",
+    "noMembers": "No <code>org_member</code> rows found. Run <code>pnpm db:seed</code>."
+  },
+  "metadata": {
+    "title": "Commons",
+    "description": "Open-source toolkit for clubs and associations"
+  }
+}

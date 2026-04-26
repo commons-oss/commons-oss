@@ -8,16 +8,16 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ### Added
 
-- `@commons-oss/db` v0.1 — Drizzle schema for the multi-tenant core: `verein`, `external_verein`, `mannschaft` (with `is_sg` flag), `mannschaft_partner`, `person` (with attribution columns), `mannschaft_membership`, `person_guardian`, `user`, `verein_user`, `verein_user_role`, `person_user_link`, `role`, `role_permission`, `audit_log`. Spielgemeinschaft (SG) is modelled as a first-class case, not an edge case.
-- Row-Level Security on every Verein-scoped table. Two Postgres roles seeded by `docker/postgres-init/00-roles.sql`: `commons_admin` (BYPASSRLS) for migrations + seeds, `commons_app` (RLS-enforced) for app traffic. Policies use `current_setting('app.current_verein', true)` so a missed `withTenant` returns zero rows instead of raising.
+- `@commons-oss/db` v0.1 — Drizzle schema for the multi-tenant core: `org`, `external_org`, `team` (with `is_partnership` flag), `partner_team`, `person` (with attribution columns), `team_membership`, `person_guardian`, `user`, `org_member`, `member_role`, `person_user_link`, `role`, `role_permission`, `audit_log`. Domain language is English in code; user-facing labels stay German via `name.de` JSONB columns and i18n catalogs. Spielgemeinschaft (partnership team) is modelled as a first-class case, not an edge case.
+- Row-Level Security on every org-scoped table. Two Postgres roles seeded by `docker/postgres-init/00-roles.sql`: `commons_admin` (BYPASSRLS) for migrations + seeds, `commons_app` (RLS-enforced) for app traffic. Policies use `current_setting('app.current_org', true)` so a missed `withTenant` returns zero rows instead of raising.
 - `withTenant(ctx, fn)` helper in `@commons-oss/db` — opens a transaction, sets the tenant GUC via `SET LOCAL`, runs `fn` with a tenant-scoped Drizzle handle.
 - `@commons-oss/db/internal` subpath export for the unscoped client. Importing it is flagged by the shared ESLint config (`no-restricted-imports`); only auth callbacks, migrations, and seeds may use it.
 - RLS smoke test (`packages/db/test/rls.test.ts`) — six tests covering tenant scoping, cross-tenant isolation, sequential GUC isolation, missing-context guard, and rollback semantics.
 - `docker-compose.yml` (Postgres 16 on `localhost:5433` to avoid colliding with other local Postgres instances; optional Logto behind `--profile logto`).
 - `.env.example` at repo root, `dotenv-cli` wired into `db:*` scripts.
 - Root `db:generate`, `db:migrate`, `db:seed`, `db:reset`, `db:push`, `test` scripts.
-- Idempotent system-role seed (`vereinsadmin`, `funktionaer`, `trainer`, `spieler`, `eltern`, `readonly`).
-- Dogfood seed: a generic demo Verein (FC Musterstadt) as the operating tenant, SV Nachbarort as an `external_verein` partner, one SG (U13) Mannschaft, Max Mustermann as the multi-role example (Reserve player + U15 Cheftrainer + Kassier), Anna Beispiel attributed to SV Nachbarort to exercise the SG path end-to-end.
+- Idempotent system-role seed: English keys (`orgadmin`, `officer`, `coach`, `player`, `parent`, `readonly`) with German display names in `name.de` (`Vereinsadmin`, `Funktionär`, `Trainer`, `Spieler`, `Eltern`, `Nur lesen`).
+- Dogfood seed: a generic demo org (FC Musterstadt) as the operating tenant, SV Nachbarort as an `external_org` partner, one partnership (U13) team, Max Mustermann as the multi-role example (Reserve player + U15 Cheftrainer + Kassier), Anna Beispiel attributed to SV Nachbarort to exercise the partnership path end-to-end.
 - Shared ESLint flat config (`@commons-oss/config-eslint`) and TS configs (`@commons-oss/config-tsconfig`).
 - Conventional Commits enforced via commitlint + husky `commit-msg` hook.
 - Root `AGENTS.md` (pointer to `CLAUDE.md`).

@@ -5,8 +5,8 @@ import * as schema from './schema/index.ts';
 /**
  * The application connection runs as `commons_app`, a non-superuser role
  * created by `docker/postgres-init/00-roles.sql` (and equivalent in prod).
- * RLS policies on every verein-scoped table filter rows by the
- * `app.current_verein` GUC, set per-request inside `withTenant`.
+ * RLS policies on every org-scoped table filter rows by the
+ * `app.current_org` GUC, set per-request inside `withTenant`.
  *
  * Migration runner uses `commons_admin` (BYPASSRLS) — see `migrate.ts`.
  */

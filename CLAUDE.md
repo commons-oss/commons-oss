@@ -28,8 +28,8 @@ These are **load-bearing**. Violating them will be caught in review.
 
 ### Tenant isolation (RLS)
 
-- Every Verein-scoped table has Row-Level Security enabled and a policy
-  filtering by `current_setting('app.current_verein', true)::uuid`.
+- Every org-scoped table has Row-Level Security enabled and a policy
+  filtering by `current_setting('app.current_org', true)::uuid`.
 - The app connection runs as `commons_app` (no BYPASSRLS). Migrations
   and seeds run as `commons_admin` (BYPASSRLS).
 - **Application code never queries the DB outside `withTenant(ctx, fn)`**
@@ -40,22 +40,31 @@ These are **load-bearing**. Violating them will be caught in review.
   RLS smoke test in `packages/db/test/rls.test.ts` that proves this.
   Don't break it.
 
-### Spielgemeinschaft (SG) is first-class
+### Naming convention: English in code, German in display strings
 
-A Spielgemeinschaft is one Mannschaft drawn from multiple Vereine, where
-typically only one of those Vereine is on Commons OSS. The schema models
+Code uses English domain language (`org`, `team`, `org_member`,
+`partner_team`, `external_org`, `member_role`). User-visible labels are
+DACH-first and live in `name.de` JSONB columns and i18n catalogs
+(`Verein`, `Mannschaft`, `Vereinsadmin`, `Trainer`, ...). System role
+keys are English (`orgadmin`, `coach`, `player`, `parent`, `officer`);
+display names are German via `name.de`.
+
+### Spielgemeinschaft (partnership team) is first-class
+
+A Spielgemeinschaft is one team drawn from multiple clubs, where
+typically only one of those clubs is on Commons OSS. The schema models
 this with:
 
-- `external_verein` — per-tenant registry of partner clubs not on the
-  platform. Promoted to a real `verein` row if they later join (the
-  `promoted_to_verein_id` column preserves attribution history).
-- `mannschaft.is_sg` flag + `mannschaft_partner` join table.
-- `person.attribution_verein_id` / `person.attribution_external_id` —
-  used for SG accounting (which Verein gets credit for which player's
-  attendance, training hours, funding-relevant data).
+- `external_org` — per-tenant registry of partner clubs not on the
+  platform. Promoted to a real `org` row if they later join (the
+  `promoted_to_org_id` column preserves attribution history).
+- `team.is_partnership` flag + `partner_team` join table.
+- `person.attribution_org_id` / `person.attribution_external_id` —
+  used for partnership accounting (which org gets credit for which
+  player's attendance, training hours, funding-relevant data).
 
-Don't treat SG as an edge case. The dogfood seed creates a real SG
-Mannschaft so this stays exercised end-to-end.
+Don't treat partnership teams as an edge case. The dogfood seed creates
+a real partnership team so this stays exercised end-to-end.
 
 ### Frontend / backend defaults
 

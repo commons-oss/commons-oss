@@ -10,12 +10,12 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { id, tenantPolicy, timestamps } from './_helpers.ts';
-import { mannschaft } from './mannschaft.ts';
-import { externalVerein, verein } from './verein.ts';
+import { team } from './team.ts';
+import { externalOrg, org } from './org.ts';
 
 export const personStatus = pgEnum('person_status', ['active', 'inactive']);
 
-export const mannschaftMembershipKind = pgEnum('mannschaft_membership_kind', [
+export const teamMembershipKind = pgEnum('team_membership_kind', [
   'player',
   'staff',
 ]);
@@ -31,10 +31,10 @@ export const person = pgTable(
   'person',
   {
     id: id(),
-    /** Tenant root — the operating Verein this person record lives under. */
-    vereinId: uuid('verein_id')
+    /** Tenant root — the operating org this person record lives under. */
+    orgId: uuid('org_id')
       .notNull()
-      .references(() => verein.id, { onDelete: 'cascade' }),
+      .references(() => org.id, { onDelete: 'cascade' }),
     firstName: text('first_name').notNull(),
     lastName: text('last_name').notNull(),
     bornOn: date('born_on'),
@@ -43,15 +43,16 @@ export const person = pgTable(
     notes: text('notes'),
     status: personStatus('status').notNull().default('active'),
     /**
-     * SG attribution. Both NULL = attributed to the operating Verein (default).
-     * At most one of the two may be non-NULL (CHECK below).
-     * `attendance_entry` (Phase 2) snapshots the resolved attribution at write time.
+     * Partnership attribution. Both NULL = attributed to the operating org
+     * (default). At most one of the two may be non-NULL (CHECK below).
+     * `attendance_entry` (Phase 2) snapshots the resolved attribution at
+     * write time.
      */
-    attributionVereinId: uuid('attribution_verein_id').references(() => verein.id, {
+    attributionOrgId: uuid('attribution_org_id').references(() => org.id, {
       onDelete: 'restrict',
     }),
     attributionExternalId: uuid('attribution_external_id').references(
-      () => externalVerein.id,
+      () => externalOrg.id,
       { onDelete: 'restrict' },
     ),
     ...timestamps,
@@ -59,34 +60,34 @@ export const person = pgTable(
   (t) => [
     check(
       'person_attribution_at_most_one',
-      sql`(${t.attributionVereinId} IS NOT NULL)::int + (${t.attributionExternalId} IS NOT NULL)::int <= 1`,
+      sql`(${t.attributionOrgId} IS NOT NULL)::int + (${t.attributionExternalId} IS NOT NULL)::int <= 1`,
     ),
     tenantPolicy('person'),
   ],
 ).enableRLS();
 
-export const mannschaftMembership = pgTable(
-  'mannschaft_membership',
+export const teamMembership = pgTable(
+  'team_membership',
   {
     id: id(),
-    /** Denormalized for RLS — equals `mannschaft.verein_id`. */
-    vereinId: uuid('verein_id')
+    /** Denormalized for RLS — equals `team.org_id`. */
+    orgId: uuid('org_id')
       .notNull()
-      .references(() => verein.id, { onDelete: 'cascade' }),
-    mannschaftId: uuid('mannschaft_id')
+      .references(() => org.id, { onDelete: 'cascade' }),
+    teamId: uuid('team_id')
       .notNull()
-      .references(() => mannschaft.id, { onDelete: 'cascade' }),
+      .references(() => team.id, { onDelete: 'cascade' }),
     personId: uuid('person_id')
       .notNull()
       .references(() => person.id, { onDelete: 'cascade' }),
-    kind: mannschaftMembershipKind('kind').notNull().default('player'),
+    kind: teamMembershipKind('kind').notNull().default('player'),
     startsOn: date('starts_on'),
     endsOn: date('ends_on'),
     ...timestamps,
   },
   (t) => [
-    unique('mannschaft_membership_unique').on(t.mannschaftId, t.personId, t.kind),
-    tenantPolicy('mannschaft_membership'),
+    unique('team_membership_unique').on(t.teamId, t.personId, t.kind),
+    tenantPolicy('team_membership'),
   ],
 ).enableRLS();
 
@@ -94,9 +95,9 @@ export const personGuardian = pgTable(
   'person_guardian',
   {
     id: id(),
-    vereinId: uuid('verein_id')
+    orgId: uuid('org_id')
       .notNull()
-      .references(() => verein.id, { onDelete: 'cascade' }),
+      .references(() => org.id, { onDelete: 'cascade' }),
     guardianPersonId: uuid('guardian_person_id')
       .notNull()
       .references(() => person.id, { onDelete: 'cascade' }),

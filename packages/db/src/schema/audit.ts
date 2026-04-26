@@ -1,7 +1,7 @@
 import { jsonb, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { id, tenantPolicy, timestamps } from './_helpers.ts';
 import { user } from './user.ts';
-import { verein } from './verein.ts';
+import { org } from './org.ts';
 
 /**
  * §21.1 Phase 1 deliverable: schema only, no UI, no middleware writes yet.
@@ -15,9 +15,9 @@ export const auditLog = pgTable(
   'audit_log',
   {
     id: id(),
-    vereinId: uuid('verein_id')
+    orgId: uuid('org_id')
       .notNull()
-      .references(() => verein.id, { onDelete: 'cascade' }),
+      .references(() => org.id, { onDelete: 'cascade' }),
     actorUserId: uuid('actor_user_id').references(() => user.id, {
       onDelete: 'set null',
     }),

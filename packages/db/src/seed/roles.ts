@@ -5,47 +5,50 @@ import { role, rolePermission } from '../schema/role.ts';
 /**
  * System role + permission seed. Idempotent — safe to re-run.
  * Per §8: roles drive authz, titles are descriptive metadata only.
+ *
+ * Role keys are English (`orgadmin`, `coach`, `player`, ...). The DACH
+ * display names live in `name.de` (Vereinsadmin, Trainer, Spieler, ...).
  */
 const SYSTEM_ROLES: Array<{
   key: string;
   name: { de: string; en: string };
-  scope: 'verein' | 'mannschaft';
+  scope: 'org' | 'team';
   permissions: string[];
 }> = [
   {
-    key: 'vereinsadmin',
-    name: { de: 'Vereinsadmin', en: 'Club admin' },
-    scope: 'verein',
+    key: 'orgadmin',
+    name: { de: 'Vereinsadmin', en: 'Org admin' },
+    scope: 'org',
     permissions: ['*.admin', '*.read', '*.write'],
   },
   {
-    key: 'funktionaer',
+    key: 'officer',
     name: { de: 'Funktionär', en: 'Officer' },
-    scope: 'verein',
+    scope: 'org',
     permissions: ['members.read', 'attendance.read'],
   },
   {
-    key: 'trainer',
+    key: 'coach',
     name: { de: 'Trainer', en: 'Coach' },
-    scope: 'mannschaft',
+    scope: 'team',
     permissions: ['attendance.record', 'attendance.read', 'members.read'],
   },
   {
-    key: 'spieler',
+    key: 'player',
     name: { de: 'Spieler', en: 'Player' },
-    scope: 'mannschaft',
+    scope: 'team',
     permissions: ['attendance.read.self', 'members.read.self'],
   },
   {
-    key: 'eltern',
+    key: 'parent',
     name: { de: 'Eltern', en: 'Parent' },
-    scope: 'mannschaft',
+    scope: 'team',
     permissions: ['attendance.read.self', 'members.read.self'],
   },
   {
     key: 'readonly',
     name: { de: 'Nur lesen', en: 'Read-only' },
-    scope: 'verein',
+    scope: 'org',
     permissions: ['*.read'],
   },
 ];
@@ -57,14 +60,14 @@ async function main(): Promise<void> {
       const inserted = await db
         .insert(role)
         .values({
-          vereinId: null,
+          orgId: null,
           key: r.key,
           name: r.name,
           scope: r.scope,
           isSystem: true,
         })
         .onConflictDoUpdate({
-          target: [role.vereinId, role.key],
+          target: [role.orgId, role.key],
           set: { name: r.name, scope: r.scope, isSystem: true },
         })
         .returning({ id: role.id });
@@ -77,7 +80,7 @@ async function main(): Promise<void> {
       if (r.permissions.length > 0) {
         await db.insert(rolePermission).values(
           r.permissions.map((p) => ({
-            vereinId: null,
+            orgId: null,
             roleId,
             permission: p,
           })),

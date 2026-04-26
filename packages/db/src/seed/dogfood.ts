@@ -1,24 +1,24 @@
 import { and, eq, isNull } from 'drizzle-orm';
 import { getAdminDb } from './_admin-db.ts';
 import {
-  externalVerein,
-  mannschaft,
-  mannschaftPartner,
-  mannschaftMembership,
+  externalOrg,
+  team,
+  partnerTeam,
+  teamMembership,
   person,
   role,
   user,
-  vereinUser,
-  vereinUserRole,
-  verein,
+  orgMember,
+  memberRole,
+  org,
 } from '../schema/index.ts';
 
 /**
- * Dogfood seed. Generic demo Verein (FC Musterstadt) as the operating tenant.
- * One SG (Spielgemeinschaft) Mannschaft (U13) with SV Nachbarort as an
- * external_verein partner — to prove the SG path end-to-end.
+ * Dogfood seed. Generic demo org (FC Musterstadt) as the operating tenant.
+ * One partnership team (U13) with SV Nachbarort as an external_org partner —
+ * to prove the partnership path end-to-end.
  *
- * Max Mustermann as the multi-role example (Reserve player, U15 Trainer, Kassier).
+ * Max Mustermann as the multi-role example (Reserve player, U15 coach, treasurer).
  *
  * Idempotent — safe to re-run. Re-uses rows by natural keys.
  */
@@ -26,53 +26,54 @@ import {
 async function main(): Promise<void> {
   const { db, close } = getAdminDb();
   try {
-    // 1. Operating Verein
-    const demoVerein = await upsertVerein(db, {
+    // 1. Operating org
+    const demoOrg = await upsertOrg(db, {
       slug: 'fc-musterstadt',
       name: 'FC Musterstadt',
     });
 
-    // 2. External partner (SV Nachbarort — SG U13 partner, NOT on the platform)
-    const partner = await upsertExternalVerein(db, {
-      vereinId: demoVerein.id,
+    // 2. External partner (SV Nachbarort — U13 partner, NOT on the platform)
+    const partner = await upsertExternalOrg(db, {
+      orgId: demoOrg.id,
       name: 'SV Nachbarort',
       contactEmail: 'office@sv-nachbarort.example',
     });
 
-    // 3. Mannschaften
-    const reserve = await upsertMannschaft(db, {
-      vereinId: demoVerein.id,
+    // 3. Teams
+    const reserve = await upsertTeam(db, {
+      orgId: demoOrg.id,
       name: 'Reserve',
       kind: 'reserve',
     });
-    const u15 = await upsertMannschaft(db, {
-      vereinId: demoVerein.id,
+    const u15 = await upsertTeam(db, {
+      orgId: demoOrg.id,
       name: 'U15',
-      kind: 'nachwuchs',
+      kind: 'youth',
     });
-    const u13Sg = await upsertMannschaft(db, {
-      vereinId: demoVerein.id,
+    const u13Partnership = await upsertTeam(db, {
+      orgId: demoOrg.id,
       name: 'U13 SG Musterstadt/Nachbarort',
-      kind: 'nachwuchs',
-      isSg: true,
+      kind: 'youth',
+      isPartnership: true,
     });
 
-    // 4. SG partner record for the U13
-    await upsertMannschaftPartner(db, {
-      vereinId: demoVerein.id,
-      mannschaftId: u13Sg.id,
+    // 4. Partner record for the U13
+    await upsertPartnerTeam(db, {
+      orgId: demoOrg.id,
+      teamId: u13Partnership.id,
       partnerExternalId: partner.id,
     });
 
-    // 5. People — Max (Reserve player + U15 trainer) and one SG kid attributed to the partner
+    // 5. People — Max (Reserve player + U15 coach) and one partnership kid
+    //    attributed to the external partner.
     const max = await upsertPerson(db, {
-      vereinId: demoVerein.id,
+      orgId: demoOrg.id,
       firstName: 'Max',
       lastName: 'Mustermann',
       bornOn: '1992-04-12',
     });
-    const sgKid = await upsertPerson(db, {
-      vereinId: demoVerein.id,
+    const partnerKid = await upsertPerson(db, {
+      orgId: demoOrg.id,
       firstName: 'Anna',
       lastName: 'Beispiel',
       bornOn: '2012-08-03',
@@ -80,61 +81,61 @@ async function main(): Promise<void> {
     });
 
     await upsertMembership(db, {
-      vereinId: demoVerein.id,
-      mannschaftId: reserve.id,
+      orgId: demoOrg.id,
+      teamId: reserve.id,
       personId: max.id,
       kind: 'player',
     });
     await upsertMembership(db, {
-      vereinId: demoVerein.id,
-      mannschaftId: u15.id,
+      orgId: demoOrg.id,
+      teamId: u15.id,
       personId: max.id,
       kind: 'staff',
     });
     await upsertMembership(db, {
-      vereinId: demoVerein.id,
-      mannschaftId: u13Sg.id,
-      personId: sgKid.id,
+      orgId: demoOrg.id,
+      teamId: u13Partnership.id,
+      personId: partnerKid.id,
       kind: 'player',
     });
 
-    // 6. User + verein_user + multi-role
+    // 6. User + org_member + multi-role
     const maxUser = await upsertUser(db, {
       logtoSub: 'dogfood|max-mustermann',
       email: 'max.mustermann@example.test',
     });
-    const maxVu = await upsertVereinUser(db, {
-      vereinId: demoVerein.id,
+    const maxMember = await upsertOrgMember(db, {
+      orgId: demoOrg.id,
       userId: maxUser.id,
     });
 
-    const trainerRoleId = await getSystemRoleId(db, 'trainer');
-    const spielerRoleId = await getSystemRoleId(db, 'spieler');
-    const funktionaerRoleId = await getSystemRoleId(db, 'funktionaer');
+    const coachRoleId = await getSystemRoleId(db, 'coach');
+    const playerRoleId = await getSystemRoleId(db, 'player');
+    const officerRoleId = await getSystemRoleId(db, 'officer');
 
-    await upsertVereinUserRole(db, {
-      vereinId: demoVerein.id,
-      vereinUserId: maxVu.id,
-      roleId: spielerRoleId,
-      mannschaftId: reserve.id,
+    await upsertMemberRole(db, {
+      orgId: demoOrg.id,
+      memberId: maxMember.id,
+      roleId: playerRoleId,
+      teamId: reserve.id,
       title: 'IV',
     });
-    await upsertVereinUserRole(db, {
-      vereinId: demoVerein.id,
-      vereinUserId: maxVu.id,
-      roleId: trainerRoleId,
-      mannschaftId: u15.id,
+    await upsertMemberRole(db, {
+      orgId: demoOrg.id,
+      memberId: maxMember.id,
+      roleId: coachRoleId,
+      teamId: u15.id,
       title: 'Cheftrainer',
     });
-    await upsertVereinUserRole(db, {
-      vereinId: demoVerein.id,
-      vereinUserId: maxVu.id,
-      roleId: funktionaerRoleId,
-      mannschaftId: null,
+    await upsertMemberRole(db, {
+      orgId: demoOrg.id,
+      memberId: maxMember.id,
+      roleId: officerRoleId,
+      teamId: null,
       title: 'Kassier',
     });
 
-    console.log('✓ dogfood seeded: FC Musterstadt + 1 SG Mannschaft + Max multi-role');
+    console.log('✓ dogfood seeded: FC Musterstadt + 1 partnership team + Max multi-role');
   } finally {
     await close();
   }
@@ -144,84 +145,84 @@ async function main(): Promise<void> {
 
 type Db = ReturnType<typeof getAdminDb>['db'];
 
-async function upsertVerein(
+async function upsertOrg(
   db: Db,
-  v: { slug: string; name: string },
+  o: { slug: string; name: string },
 ): Promise<{ id: string }> {
   const r = await db
-    .insert(verein)
-    .values(v)
-    .onConflictDoUpdate({ target: verein.slug, set: { name: v.name } })
-    .returning({ id: verein.id });
-  if (!r[0]) throw new Error(`upsertVerein failed for ${v.slug}`);
+    .insert(org)
+    .values(o)
+    .onConflictDoUpdate({ target: org.slug, set: { name: o.name } })
+    .returning({ id: org.id });
+  if (!r[0]) throw new Error(`upsertOrg failed for ${o.slug}`);
   return r[0];
 }
 
-async function upsertExternalVerein(
+async function upsertExternalOrg(
   db: Db,
-  v: { vereinId: string; name: string; contactEmail?: string },
+  e: { orgId: string; name: string; contactEmail?: string },
 ): Promise<{ id: string }> {
   const r = await db
-    .insert(externalVerein)
-    .values(v)
+    .insert(externalOrg)
+    .values(e)
     .onConflictDoUpdate({
-      target: [externalVerein.vereinId, externalVerein.name],
-      set: { contactEmail: v.contactEmail ?? null },
+      target: [externalOrg.orgId, externalOrg.name],
+      set: { contactEmail: e.contactEmail ?? null },
     })
-    .returning({ id: externalVerein.id });
-  if (!r[0]) throw new Error(`upsertExternalVerein failed for ${v.name}`);
+    .returning({ id: externalOrg.id });
+  if (!r[0]) throw new Error(`upsertExternalOrg failed for ${e.name}`);
   return r[0];
 }
 
-async function upsertMannschaft(
+async function upsertTeam(
   db: Db,
-  m: {
-    vereinId: string;
+  t: {
+    orgId: string;
     name: string;
-    kind: 'kampfmannschaft' | 'reserve' | 'nachwuchs' | 'sonstige';
-    isSg?: boolean;
+    kind: 'first' | 'reserve' | 'youth' | 'other';
+    isPartnership?: boolean;
   },
 ): Promise<{ id: string }> {
   const r = await db
-    .insert(mannschaft)
-    .values({ ...m, isSg: m.isSg ?? false })
+    .insert(team)
+    .values({ ...t, isPartnership: t.isPartnership ?? false })
     .onConflictDoUpdate({
-      target: [mannschaft.vereinId, mannschaft.name],
-      set: { kind: m.kind, isSg: m.isSg ?? false },
+      target: [team.orgId, team.name],
+      set: { kind: t.kind, isPartnership: t.isPartnership ?? false },
     })
-    .returning({ id: mannschaft.id });
-  if (!r[0]) throw new Error(`upsertMannschaft failed for ${m.name}`);
+    .returning({ id: team.id });
+  if (!r[0]) throw new Error(`upsertTeam failed for ${t.name}`);
   return r[0];
 }
 
-async function upsertMannschaftPartner(
+async function upsertPartnerTeam(
   db: Db,
   p: {
-    vereinId: string;
-    mannschaftId: string;
-    partnerVereinId?: string;
+    orgId: string;
+    teamId: string;
+    partnerOrgId?: string;
     partnerExternalId?: string;
   },
 ): Promise<void> {
   const existing = await db
-    .select({ id: mannschaftPartner.id })
-    .from(mannschaftPartner)
+    .select({ id: partnerTeam.id })
+    .from(partnerTeam)
     .where(
       and(
-        eq(mannschaftPartner.mannschaftId, p.mannschaftId),
+        eq(partnerTeam.teamId, p.teamId),
         p.partnerExternalId
-          ? eq(mannschaftPartner.partnerExternalId, p.partnerExternalId)
-          : eq(mannschaftPartner.partnerVereinId, p.partnerVereinId!),
+          ? eq(partnerTeam.partnerExternalId, p.partnerExternalId)
+          : eq(partnerTeam.partnerOrgId, p.partnerOrgId!),
       ),
     );
   if (existing.length > 0) return;
-  await db.insert(mannschaftPartner).values(p);
+  await db.insert(partnerTeam).values(p);
 }
 
 async function upsertPerson(
   db: Db,
   p: {
-    vereinId: string;
+    orgId: string;
     firstName: string;
     lastName: string;
     bornOn?: string;
@@ -233,7 +234,7 @@ async function upsertPerson(
     .from(person)
     .where(
       and(
-        eq(person.vereinId, p.vereinId),
+        eq(person.orgId, p.orgId),
         eq(person.firstName, p.firstName),
         eq(person.lastName, p.lastName),
       ),
@@ -247,20 +248,20 @@ async function upsertPerson(
 async function upsertMembership(
   db: Db,
   m: {
-    vereinId: string;
-    mannschaftId: string;
+    orgId: string;
+    teamId: string;
     personId: string;
     kind: 'player' | 'staff';
   },
 ): Promise<void> {
   await db
-    .insert(mannschaftMembership)
+    .insert(teamMembership)
     .values(m)
     .onConflictDoNothing({
       target: [
-        mannschaftMembership.mannschaftId,
-        mannschaftMembership.personId,
-        mannschaftMembership.kind,
+        teamMembership.teamId,
+        teamMembership.personId,
+        teamMembership.kind,
       ],
     });
 }
@@ -278,19 +279,19 @@ async function upsertUser(
   return r[0];
 }
 
-async function upsertVereinUser(
+async function upsertOrgMember(
   db: Db,
-  vu: { vereinId: string; userId: string },
+  m: { orgId: string; userId: string },
 ): Promise<{ id: string }> {
   const r = await db
-    .insert(vereinUser)
-    .values(vu)
+    .insert(orgMember)
+    .values(m)
     .onConflictDoUpdate({
-      target: [vereinUser.vereinId, vereinUser.userId],
+      target: [orgMember.orgId, orgMember.userId],
       set: { status: 'active' },
     })
-    .returning({ id: vereinUser.id });
-  if (!r[0]) throw new Error('upsertVereinUser failed');
+    .returning({ id: orgMember.id });
+  if (!r[0]) throw new Error('upsertOrgMember failed');
   return r[0];
 }
 
@@ -298,32 +299,28 @@ async function getSystemRoleId(db: Db, key: string): Promise<string> {
   const r = await db
     .select({ id: role.id })
     .from(role)
-    .where(and(isNull(role.vereinId), eq(role.key, key)));
+    .where(and(isNull(role.orgId), eq(role.key, key)));
   if (!r[0]) {
     throw new Error(`system role '${key}' not found — run db:seed:roles first`);
   }
   return r[0].id;
 }
 
-async function upsertVereinUserRole(
+async function upsertMemberRole(
   db: Db,
   r: {
-    vereinId: string;
-    vereinUserId: string;
+    orgId: string;
+    memberId: string;
     roleId: string;
-    mannschaftId: string | null;
+    teamId: string | null;
     title: string;
   },
 ): Promise<void> {
   await db
-    .insert(vereinUserRole)
+    .insert(memberRole)
     .values(r)
     .onConflictDoUpdate({
-      target: [
-        vereinUserRole.vereinUserId,
-        vereinUserRole.roleId,
-        vereinUserRole.mannschaftId,
-      ],
+      target: [memberRole.memberId, memberRole.roleId, memberRole.teamId],
       set: { title: r.title },
     });
 }

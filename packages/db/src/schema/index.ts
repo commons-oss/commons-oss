@@ -5,8 +5,8 @@
  */
 export * from './_helpers.ts';
 export * from './audit.ts';
-export * from './mannschaft.ts';
+export * from './team.ts';
 export * from './person.ts';
 export * from './role.ts';
 export * from './user.ts';
-export * from './verein.ts';
+export * from './org.ts';

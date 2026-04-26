@@ -10,22 +10,23 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { id, tenantOrSystemPolicy, tenantPolicy, timestamps } from './_helpers.ts';
-import { mannschaft } from './mannschaft.ts';
-import { verein } from './verein.ts';
-import { vereinUser } from './user.ts';
+import { team } from './team.ts';
+import { org } from './org.ts';
+import { orgMember } from './user.ts';
 
-export const roleScope = pgEnum('role_scope', ['verein', 'mannschaft']);
+export const roleScope = pgEnum('role_scope', ['org', 'team']);
 
 /**
- * Role definitions. System roles have verein_id IS NULL and are visible to all tenants
- * via tenant_or_system policy. Custom Verein-defined roles (Phase 3) have verein_id set.
+ * Role definitions. System roles have org_id IS NULL and are visible to all
+ * tenants via tenant_or_system policy. Custom org-defined roles (Phase 3)
+ * have org_id set.
  */
 export const role = pgTable(
   'role',
   {
     id: id(),
     /** NULL = system role, visible to all tenants. */
-    vereinId: uuid('verein_id').references(() => verein.id, { onDelete: 'cascade' }),
+    orgId: uuid('org_id').references(() => org.id, { onDelete: 'cascade' }),
     key: text('key').notNull(),
     name: jsonb('name').notNull(),
     scope: roleScope('scope').notNull(),
@@ -33,10 +34,10 @@ export const role = pgTable(
     ...timestamps,
   },
   (t) => [
-    unique('role_key_per_scope').on(t.vereinId, t.key),
+    unique('role_key_per_scope').on(t.orgId, t.key),
     check(
-      'role_system_implies_null_verein',
-      sql`(${t.isSystem} = false) OR (${t.vereinId} IS NULL)`,
+      'role_system_implies_null_org',
+      sql`(${t.isSystem} = false) OR (${t.orgId} IS NULL)`,
     ),
     tenantOrSystemPolicy('role'),
   ],
@@ -47,7 +48,7 @@ export const rolePermission = pgTable(
   {
     id: id(),
     /** Denormalized from role — NULL for system role permissions. */
-    vereinId: uuid('verein_id').references(() => verein.id, { onDelete: 'cascade' }),
+    orgId: uuid('org_id').references(() => org.id, { onDelete: 'cascade' }),
     roleId: uuid('role_id')
       .notNull()
       .references(() => role.id, { onDelete: 'cascade' }),
@@ -61,36 +62,30 @@ export const rolePermission = pgTable(
 ).enableRLS();
 
 /**
- * Multi-role: one verein_user can hold N (role, mannschaft, title)
- * combinations. mannschaft_id required when role.scope='mannschaft' (CHECK enforced
- * via app code today; Phase 3 may move to a function-based check).
+ * Multi-role: one org_member can hold N (role, team, title) combinations.
+ * `team_id` required when role.scope='team' (CHECK enforced via app code
+ * today; Phase 3 may move to a function-based check).
  */
-export const vereinUserRole = pgTable(
-  'verein_user_role',
+export const memberRole = pgTable(
+  'member_role',
   {
     id: id(),
-    vereinId: uuid('verein_id')
+    orgId: uuid('org_id')
       .notNull()
-      .references(() => verein.id, { onDelete: 'cascade' }),
-    vereinUserId: uuid('verein_user_id')
+      .references(() => org.id, { onDelete: 'cascade' }),
+    memberId: uuid('member_id')
       .notNull()
-      .references(() => vereinUser.id, { onDelete: 'cascade' }),
+      .references(() => orgMember.id, { onDelete: 'cascade' }),
     roleId: uuid('role_id')
       .notNull()
       .references(() => role.id, { onDelete: 'restrict' }),
-    mannschaftId: uuid('mannschaft_id').references(() => mannschaft.id, {
-      onDelete: 'cascade',
-    }),
+    teamId: uuid('team_id').references(() => team.id, { onDelete: 'cascade' }),
     /** Descriptive UI metadata only — "Obmann", "Captain", "Cheftrainer". NOT authz. */
     title: text('title'),
     ...timestamps,
   },
   (t) => [
-    unique('verein_user_role_unique').on(
-      t.vereinUserId,
-      t.roleId,
-      t.mannschaftId,
-    ),
-    tenantPolicy('verein_user_role'),
+    unique('member_role_unique').on(t.memberId, t.roleId, t.teamId),
+    tenantPolicy('member_role'),
   ],
 ).enableRLS();

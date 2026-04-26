@@ -7,14 +7,14 @@ import { getDb, type DrizzleDb } from './client.ts';
  * — kept narrow here to avoid a circular dependency.
  */
 export interface TenantContext {
-  verein: { id: string };
+  org: { id: string };
   user?: { id: string };
 }
 
 /**
  * Open a transaction, set the tenant + user GUCs via `SET LOCAL`, then run `fn`
  * with the transactional db handle. Anything inside the transaction is RLS-scoped
- * to `ctx.verein.id` because every policy reads `current_setting('app.current_verein')`.
+ * to `ctx.org.id` because every policy reads `current_setting('app.current_org')`.
  *
  * `SET LOCAL` ties the GUC to the transaction — when it commits or rolls back,
  * the setting is dropped. This is what makes the connection safe to return to
@@ -28,8 +28,8 @@ export async function withTenant<T>(
   ctx: TenantContext,
   fn: (tx: DrizzleDb) => Promise<T>,
 ): Promise<T> {
-  if (!isUuid(ctx.verein.id)) {
-    throw new Error(`withTenant: invalid verein id ${ctx.verein.id}`);
+  if (!isUuid(ctx.org.id)) {
+    throw new Error(`withTenant: invalid org id ${ctx.org.id}`);
   }
   if (ctx.user && !isUuid(ctx.user.id)) {
     throw new Error(`withTenant: invalid user id ${ctx.user.id}`);
@@ -40,7 +40,7 @@ export async function withTenant<T>(
     // set_config('key', 'value', true) === SET LOCAL — true = tx-scoped.
     // Parameter binding avoids SQL injection on the GUC value path.
     await tx.execute(
-      sql`SELECT set_config('app.current_verein', ${ctx.verein.id}, true)`,
+      sql`SELECT set_config('app.current_org', ${ctx.org.id}, true)`,
     );
     if (ctx.user) {
       await tx.execute(

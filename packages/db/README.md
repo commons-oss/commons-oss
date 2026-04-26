@@ -23,12 +23,12 @@ URLs:
 
 ## RLS contract
 
-Every Verein-scoped table has RLS enabled and a policy filtering by
-`current_setting('app.current_verein', true)::uuid`. The `, true` part
+Every org-scoped table has RLS enabled and a policy filtering by
+`current_setting('app.current_org', true)::uuid`. The `, true` part
 makes the GUC **missing-OK** — a missed `withTenant` returns NULL, which
 fails the equality check, which returns zero rows. Closed by default.
 
-System-shared tables (`role`, `role_permission` with `verein_id IS NULL`)
+System-shared tables (`role`, `role_permission` with `org_id IS NULL`)
 use `tenantOrSystemPolicy` so all tenants can read the system rows.
 
 ## How to read or write data
@@ -38,7 +38,7 @@ Always:
 ```ts
 import { withTenant } from '@commons-oss/db';
 
-const result = await withTenant({ verein: { id: vereinId } }, async (tx) => {
+const result = await withTenant({ org: { id: orgId } }, async (tx) => {
   return tx.select().from(person).where(eq(person.lastName, 'Mustermann'));
 });
 ```
@@ -49,7 +49,7 @@ success / rolls back on throw. The connection returns to the pool clean —
 no GUC leaks across requests.
 
 **Never import `@commons-oss/db/internal`** unless you are: an auth
-callback that runs before the Verein context exists, a migration script,
+callback that runs before the org context exists, a migration script,
 or a seed. The shared ESLint config flags every other call site.
 
 ## Locking patterns
@@ -117,7 +117,7 @@ happy.
 
 ```bash
 pnpm db:seed:roles     # idempotent — system roles + permissions
-pnpm db:seed:dogfood   # idempotent — FC Musterstadt + 1 SG Mannschaft
+pnpm db:seed:dogfood   # idempotent — FC Musterstadt + 1 partnership team
 pnpm db:seed           # both, in order
 ```
 

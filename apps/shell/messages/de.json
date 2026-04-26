@@ -1,0 +1,18 @@
+{
+  "shell": {
+    "appName": "Commons",
+    "noModules": "Keine Module registriert.",
+    "signedInAs": "Angemeldet als <code>{sub}</code> auf Mandant <code>{slug}</code>.",
+    "phasePlaceholder": "Phase 1 Shell. Module erscheinen hier, sobald sie in <code>apps/shell/modules.ts</code> registriert sind.",
+    "unknownOrg": "Unbekannt"
+  },
+  "auth": {
+    "signInTitle": "Commons OSS — Dev-Anmeldung",
+    "stubHint": "Stub-Auth ist aktiv (kein <code>LOGTO_*</code> Env). Identität zur Anmeldung auswählen.",
+    "noMembers": "Keine <code>org_member</code>-Zeilen gefunden. <code>pnpm db:seed</code> ausführen."
+  },
+  "metadata": {
+    "title": "Commons",
+    "description": "Open-Source-Toolkit für Vereine"
+  }
+}
