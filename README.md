@@ -29,17 +29,22 @@ A pnpm + Turborepo monorepo.
 
 ```
 commons-oss/
-├── apps/                          # products (none yet)
+├── apps/
+│   └── shell/                     # Next.js 16 admin shell (proxy.ts, [org] tenant routing, i18n)
 ├── packages/
+│   ├── auth/                      # @commons-oss/auth — AuthProvider (Stub + Logto), JWT cookies
 │   ├── brand/                     # @commons-oss/brand — logo, color tokens, typography
 │   ├── config-eslint/             # shared ESLint flat config
 │   ├── config-tsconfig/           # shared TS configs
-│   └── db/                        # @commons-oss/db — Drizzle schema, RLS, migrations, seeds
+│   ├── db/                        # @commons-oss/db — Drizzle schema, RLS, migrations, seeds
+│   └── module/                    # @commons-oss/module — defineModule + registry contracts
+├── scripts/check-rls.mjs          # CI guard: tenant tables must enable RLS + policy
+├── .github/workflows/ci.yml       # format/lint/type-check/test + RLS integration job
 ├── docker/postgres-init/          # local Postgres role + grant bootstrap
 ├── docker-compose.yml             # local Postgres (and optional Logto)
 ├── .env.example                   # local dev env template
 ├── BRAND.md                       # canonical brand guidelines
-├── CLAUDE.md                      # agent handover for brand work
+├── CLAUDE.md                      # agent handover (engineering + brand)
 ├── CHANGELOG.md
 ├── LICENSE                        # AGPL-3.0-or-later
 └── README.md
