@@ -1,6 +1,6 @@
-import { sql } from 'drizzle-orm';
-import { getAdminDb } from './_admin-db.ts';
-import { role, rolePermission } from '../schema/role.ts';
+import { sql } from "drizzle-orm";
+import { getAdminDb } from "./_admin-db.ts";
+import { role, rolePermission } from "../schema/role.ts";
 
 /**
  * System role + permission seed. Idempotent — safe to re-run.
@@ -12,44 +12,44 @@ import { role, rolePermission } from '../schema/role.ts';
 const SYSTEM_ROLES: Array<{
   key: string;
   name: { de: string; en: string };
-  scope: 'org' | 'team';
+  scope: "org" | "team";
   permissions: string[];
 }> = [
   {
-    key: 'orgadmin',
-    name: { de: 'Vereinsadmin', en: 'Org admin' },
-    scope: 'org',
-    permissions: ['*.admin', '*.read', '*.write'],
+    key: "orgadmin",
+    name: { de: "Vereinsadmin", en: "Org admin" },
+    scope: "org",
+    permissions: ["*.admin", "*.read", "*.write"],
   },
   {
-    key: 'officer',
-    name: { de: 'Funktionär', en: 'Officer' },
-    scope: 'org',
-    permissions: ['members.read', 'attendance.read'],
+    key: "officer",
+    name: { de: "Funktionär", en: "Officer" },
+    scope: "org",
+    permissions: ["members.read", "attendance.read"],
   },
   {
-    key: 'coach',
-    name: { de: 'Trainer', en: 'Coach' },
-    scope: 'team',
-    permissions: ['attendance.record', 'attendance.read', 'members.read'],
+    key: "coach",
+    name: { de: "Trainer", en: "Coach" },
+    scope: "team",
+    permissions: ["attendance.record", "attendance.read", "members.read"],
   },
   {
-    key: 'player',
-    name: { de: 'Spieler', en: 'Player' },
-    scope: 'team',
-    permissions: ['attendance.read.self', 'members.read.self'],
+    key: "player",
+    name: { de: "Spieler", en: "Player" },
+    scope: "team",
+    permissions: ["attendance.read.self", "members.read.self"],
   },
   {
-    key: 'parent',
-    name: { de: 'Eltern', en: 'Parent' },
-    scope: 'team',
-    permissions: ['attendance.read.self', 'members.read.self'],
+    key: "parent",
+    name: { de: "Eltern", en: "Parent" },
+    scope: "team",
+    permissions: ["attendance.read.self", "members.read.self"],
   },
   {
-    key: 'readonly',
-    name: { de: 'Nur lesen', en: 'Read-only' },
-    scope: 'org',
-    permissions: ['*.read'],
+    key: "readonly",
+    name: { de: "Nur lesen", en: "Read-only" },
+    scope: "org",
+    permissions: ["*.read"],
   },
 ];
 
@@ -88,7 +88,7 @@ async function main(): Promise<void> {
       }
       console.log(`✓ role ${r.key} (${r.permissions.length} perms)`);
     }
-    console.log('System roles seeded.');
+    console.log("System roles seeded.");
   } finally {
     await close();
   }

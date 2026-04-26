@@ -1,4 +1,4 @@
-import type { ModuleDefinition, Permission } from './types.ts';
+import type { ModuleDefinition, Permission } from "./types.ts";
 
 /**
  * Phase 1: a static registry. Modules are imported and listed in

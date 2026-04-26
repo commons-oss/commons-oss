@@ -65,12 +65,8 @@
           "name": "audit_log_org_id_org_id_fk",
           "tableFrom": "audit_log",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -78,12 +74,8 @@
           "name": "audit_log_actor_user_id_user_id_fk",
           "tableFrom": "audit_log",
           "tableTo": "user",
-          "columnsFrom": [
-            "actor_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["actor_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -95,9 +87,7 @@
           "name": "audit_log_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -161,12 +151,8 @@
           "name": "partner_team_org_id_org_id_fk",
           "tableFrom": "partner_team",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -174,12 +160,8 @@
           "name": "partner_team_team_id_team_id_fk",
           "tableFrom": "partner_team",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -187,12 +169,8 @@
           "name": "partner_team_partner_org_id_org_id_fk",
           "tableFrom": "partner_team",
           "tableTo": "org",
-          "columnsFrom": [
-            "partner_org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["partner_org_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -200,12 +178,8 @@
           "name": "partner_team_partner_external_id_external_org_id_fk",
           "tableFrom": "partner_team",
           "tableTo": "external_org",
-          "columnsFrom": [
-            "partner_external_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["partner_external_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -217,9 +191,7 @@
           "name": "partner_team_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -305,12 +277,8 @@
           "name": "team_org_id_org_id_fk",
           "tableFrom": "team",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -320,10 +288,7 @@
         "team_name_per_tenant": {
           "name": "team_name_per_tenant",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "name"
-          ]
+          "columns": ["org_id", "name"]
         }
       },
       "policies": {
@@ -331,9 +296,7 @@
           "name": "team_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -435,12 +398,8 @@
           "name": "person_org_id_org_id_fk",
           "tableFrom": "person",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -448,12 +407,8 @@
           "name": "person_attribution_org_id_org_id_fk",
           "tableFrom": "person",
           "tableTo": "org",
-          "columnsFrom": [
-            "attribution_org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["attribution_org_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -461,12 +416,8 @@
           "name": "person_attribution_external_id_external_org_id_fk",
           "tableFrom": "person",
           "tableTo": "external_org",
-          "columnsFrom": [
-            "attribution_external_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["attribution_external_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -478,9 +429,7 @@
           "name": "person_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -550,12 +499,8 @@
           "name": "person_guardian_org_id_org_id_fk",
           "tableFrom": "person_guardian",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -563,12 +508,8 @@
           "name": "person_guardian_guardian_person_id_person_id_fk",
           "tableFrom": "person_guardian",
           "tableTo": "person",
-          "columnsFrom": [
-            "guardian_person_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["guardian_person_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -576,12 +517,8 @@
           "name": "person_guardian_child_person_id_person_id_fk",
           "tableFrom": "person_guardian",
           "tableTo": "person",
-          "columnsFrom": [
-            "child_person_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["child_person_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -591,10 +528,7 @@
         "person_guardian_unique": {
           "name": "person_guardian_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "guardian_person_id",
-            "child_person_id"
-          ]
+          "columns": ["guardian_person_id", "child_person_id"]
         }
       },
       "policies": {
@@ -602,9 +536,7 @@
           "name": "person_guardian_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -687,12 +619,8 @@
           "name": "team_membership_org_id_org_id_fk",
           "tableFrom": "team_membership",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -700,12 +628,8 @@
           "name": "team_membership_team_id_team_id_fk",
           "tableFrom": "team_membership",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -713,12 +637,8 @@
           "name": "team_membership_person_id_person_id_fk",
           "tableFrom": "team_membership",
           "tableTo": "person",
-          "columnsFrom": [
-            "person_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["person_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -728,11 +648,7 @@
         "team_membership_unique": {
           "name": "team_membership_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "team_id",
-            "person_id",
-            "kind"
-          ]
+          "columns": ["team_id", "person_id", "kind"]
         }
       },
       "policies": {
@@ -740,9 +656,7 @@
           "name": "team_membership_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -812,12 +726,8 @@
           "name": "member_role_org_id_org_id_fk",
           "tableFrom": "member_role",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -825,12 +735,8 @@
           "name": "member_role_member_id_org_member_id_fk",
           "tableFrom": "member_role",
           "tableTo": "org_member",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -838,12 +744,8 @@
           "name": "member_role_role_id_role_id_fk",
           "tableFrom": "member_role",
           "tableTo": "role",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -851,12 +753,8 @@
           "name": "member_role_team_id_team_id_fk",
           "tableFrom": "member_role",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -866,11 +764,7 @@
         "member_role_unique": {
           "name": "member_role_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "member_id",
-            "role_id",
-            "team_id"
-          ]
+          "columns": ["member_id", "role_id", "team_id"]
         }
       },
       "policies": {
@@ -878,9 +772,7 @@
           "name": "member_role_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -952,12 +844,8 @@
           "name": "role_org_id_org_id_fk",
           "tableFrom": "role",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -967,10 +855,7 @@
         "role_key_per_scope": {
           "name": "role_key_per_scope",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "key"
-          ]
+          "columns": ["org_id", "key"]
         }
       },
       "policies": {
@@ -978,9 +863,7 @@
           "name": "role_tenant_or_system",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -1043,12 +926,8 @@
           "name": "role_permission_org_id_org_id_fk",
           "tableFrom": "role_permission",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1056,12 +935,8 @@
           "name": "role_permission_role_id_role_id_fk",
           "tableFrom": "role_permission",
           "tableTo": "role",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1071,10 +946,7 @@
         "role_permission_unique": {
           "name": "role_permission_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "role_id",
-            "permission"
-          ]
+          "columns": ["role_id", "permission"]
         }
       },
       "policies": {
@@ -1082,9 +954,7 @@
           "name": "role_permission_tenant_or_system",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id IS NULL OR org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -1144,12 +1014,8 @@
           "name": "org_member_org_id_org_id_fk",
           "tableFrom": "org_member",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1157,12 +1023,8 @@
           "name": "org_member_user_id_user_id_fk",
           "tableFrom": "org_member",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1172,10 +1034,7 @@
         "org_member_unique": {
           "name": "org_member_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "user_id"
-          ]
+          "columns": ["org_id", "user_id"]
         }
       },
       "policies": {
@@ -1183,9 +1042,7 @@
           "name": "org_member_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -1236,12 +1093,8 @@
           "name": "person_user_link_org_id_org_id_fk",
           "tableFrom": "person_user_link",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1249,12 +1102,8 @@
           "name": "person_user_link_person_id_person_id_fk",
           "tableFrom": "person_user_link",
           "tableTo": "person",
-          "columnsFrom": [
-            "person_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["person_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1262,12 +1111,8 @@
           "name": "person_user_link_user_id_user_id_fk",
           "tableFrom": "person_user_link",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1277,18 +1122,12 @@
         "person_user_link_person_unique": {
           "name": "person_user_link_person_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "person_id"
-          ]
+          "columns": ["org_id", "person_id"]
         },
         "person_user_link_user_unique": {
           "name": "person_user_link_user_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "user_id"
-          ]
+          "columns": ["org_id", "user_id"]
         }
       },
       "policies": {
@@ -1296,9 +1135,7 @@
           "name": "person_user_link_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -1358,9 +1195,7 @@
         "user_logto_sub_unique": {
           "name": "user_logto_sub_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "logto_sub"
-          ]
+          "columns": ["logto_sub"]
         }
       },
       "policies": {
@@ -1368,9 +1203,7 @@
           "name": "user_via_org",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "EXISTS (\n        SELECT 1 FROM org_member om\n        WHERE om.user_id = id\n        AND om.org_id = current_setting('app.current_org', true)::uuid\n      )",
           "withCheck": "true"
         }
@@ -1451,12 +1284,8 @@
           "name": "external_org_org_id_org_id_fk",
           "tableFrom": "external_org",
           "tableTo": "org",
-          "columnsFrom": [
-            "org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["org_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1464,12 +1293,8 @@
           "name": "external_org_promoted_to_org_id_org_id_fk",
           "tableFrom": "external_org",
           "tableTo": "org",
-          "columnsFrom": [
-            "promoted_to_org_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["promoted_to_org_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1479,10 +1304,7 @@
         "external_org_name_per_tenant": {
           "name": "external_org_name_per_tenant",
           "nullsNotDistinct": false,
-          "columns": [
-            "org_id",
-            "name"
-          ]
+          "columns": ["org_id", "name"]
         }
       },
       "policies": {
@@ -1490,9 +1312,7 @@
           "name": "external_org_tenant",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "org_id = current_setting('app.current_org', true)::uuid",
           "withCheck": "org_id = current_setting('app.current_org', true)::uuid"
         }
@@ -1559,9 +1379,7 @@
         "org_slug_unique": {
           "name": "org_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {
@@ -1569,9 +1387,7 @@
           "name": "org_self",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "commons_app"
-          ],
+          "to": ["commons_app"],
           "using": "id = current_setting('app.current_org', true)::uuid",
           "withCheck": "id = current_setting('app.current_org', true)::uuid"
         }
@@ -1589,54 +1405,32 @@
     "public.team_kind": {
       "name": "team_kind",
       "schema": "public",
-      "values": [
-        "first",
-        "reserve",
-        "youth",
-        "other"
-      ]
+      "values": ["first", "reserve", "youth", "other"]
     },
     "public.guardian_relation": {
       "name": "guardian_relation",
       "schema": "public",
-      "values": [
-        "mother",
-        "father",
-        "guardian",
-        "other"
-      ]
+      "values": ["mother", "father", "guardian", "other"]
     },
     "public.person_status": {
       "name": "person_status",
       "schema": "public",
-      "values": [
-        "active",
-        "inactive"
-      ]
+      "values": ["active", "inactive"]
     },
     "public.team_membership_kind": {
       "name": "team_membership_kind",
       "schema": "public",
-      "values": [
-        "player",
-        "staff"
-      ]
+      "values": ["player", "staff"]
     },
     "public.role_scope": {
       "name": "role_scope",
       "schema": "public",
-      "values": [
-        "org",
-        "team"
-      ]
+      "values": ["org", "team"]
     },
     "public.member_status": {
       "name": "member_status",
       "schema": "public",
-      "values": [
-        "active",
-        "suspended"
-      ]
+      "values": ["active", "suspended"]
     }
   },
   "schemas": {},

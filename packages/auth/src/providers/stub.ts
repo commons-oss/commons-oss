@@ -1,8 +1,8 @@
-import { eq } from 'drizzle-orm';
-import { getDb } from '@commons-oss/db/internal';
-import { schema } from '@commons-oss/db';
-import { getConfig } from '../config.ts';
-import type { AuthProvider, SignInResult } from '../types.ts';
+import { eq } from "drizzle-orm";
+import { getDb } from "@commons-oss/db/internal";
+import { schema } from "@commons-oss/db";
+import { getConfig } from "../config.ts";
+import type { AuthProvider, SignInResult } from "../types.ts";
 
 /**
  * Dev-only auth: lists every `org_member` row in the DB and lets you click
@@ -16,31 +16,31 @@ import type { AuthProvider, SignInResult } from '../types.ts';
  * see `route-handlers.ts`. Defense-in-depth: the picker page is also gated.
  */
 export class StubProvider implements AuthProvider {
-  readonly kind = 'stub' as const;
+  readonly kind = "stub" as const;
 
   async beginSignIn(_req: Request): Promise<Response> {
-    if (process.env.NODE_ENV === 'production') {
-      return new Response('Stub auth is disabled in production', { status: 403 });
+    if (process.env.NODE_ENV === "production") {
+      return new Response("Stub auth is disabled in production", { status: 403 });
     }
 
     const rows = await this.listMembershipChoices();
     const html = renderPickerPage(rows);
     return new Response(html, {
       status: 200,
-      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   }
 
   async handleCallback(req: Request): Promise<SignInResult> {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('Stub auth is disabled in production');
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Stub auth is disabled in production");
     }
 
     const form = await req.formData();
-    const userId = formString(form.get('userId'));
-    const orgId = formString(form.get('orgId'));
+    const userId = formString(form.get("userId"));
+    const orgId = formString(form.get("orgId"));
     if (!userId || !orgId) {
-      throw new Error('[stub-auth] callback missing userId or orgId');
+      throw new Error("[stub-auth] callback missing userId or orgId");
     }
 
     const db = getDb();
@@ -69,7 +69,7 @@ export class StubProvider implements AuthProvider {
         logtoSub: hit.logtoSub,
         orgId: hit.orgId,
         orgSlug: hit.orgSlug,
-        locale: hit.defaultLocale === 'en' ? 'en' : 'de',
+        locale: hit.defaultLocale === "en" ? "en" : "de",
         iat: now,
         exp: now + cfg.AUTH_SESSION_TTL,
       },
@@ -78,7 +78,7 @@ export class StubProvider implements AuthProvider {
   }
 
   signOut(_req: Request): Promise<{ redirectTo: string }> {
-    return Promise.resolve({ redirectTo: '/' });
+    return Promise.resolve({ redirectTo: "/" });
   }
 
   private async listMembershipChoices(): Promise<MembershipChoice[]> {
@@ -94,7 +94,7 @@ export class StubProvider implements AuthProvider {
       .from(schema.orgMember)
       .innerJoin(schema.user, eq(schema.user.id, schema.orgMember.userId))
       .innerJoin(schema.org, eq(schema.org.id, schema.orgMember.orgId))
-      .where(eq(schema.orgMember.status, 'active'));
+      .where(eq(schema.orgMember.status, "active"));
 
     return rows;
   }
@@ -124,7 +124,7 @@ function renderPickerPage(rows: MembershipChoice[]): string {
               </button>
             </form>`,
           )
-          .join('');
+          .join("");
 
   return `<!doctype html>
 <html lang="en">
@@ -151,14 +151,14 @@ function renderPickerPage(rows: MembershipChoice[]): string {
 }
 
 function formString(v: unknown): string {
-  return typeof v === 'string' ? v : '';
+  return typeof v === "string" ? v : "";
 }
 
 function escapeHtml(s: string): string {
   return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

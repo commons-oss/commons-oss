@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { decodeSession, getConfig, type Session } from '@commons-oss/auth';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { decodeSession, getConfig, type Session } from "@commons-oss/auth";
 
 /**
  * Read + verify the session inside an RSC / route handler. Returns null if
@@ -29,7 +29,7 @@ export async function readSession(): Promise<Session | null> {
  */
 export async function requireSession(slug: string): Promise<Session> {
   const session = await readSession();
-  if (!session) redirect('/api/auth/sign-in');
+  if (!session) redirect("/api/auth/sign-in");
   if (session.orgSlug !== slug) redirect(`/${session.orgSlug}`);
   return session;
 }

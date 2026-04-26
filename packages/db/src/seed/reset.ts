@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm';
-import { getAdminDb } from './_admin-db.ts';
+import { sql } from "drizzle-orm";
+import { getAdminDb } from "./_admin-db.ts";
 
 /**
  * Drop all tables in the public schema. Local-dev only — guarded against
@@ -8,10 +8,10 @@ import { getAdminDb } from './_admin-db.ts';
  * After reset, run `pnpm db:push` (or `db:migrate`) to recreate the schema.
  */
 async function main(): Promise<void> {
-  const url = process.env['DATABASE_URL_ADMIN'] ?? process.env['DATABASE_URL'] ?? '';
+  const url = process.env["DATABASE_URL_ADMIN"] ?? process.env["DATABASE_URL"] ?? "";
   if (!/localhost|127\.0\.0\.1|host\.docker\.internal/.test(url)) {
     throw new Error(
-      `db:reset refused — DATABASE_URL_ADMIN must point at localhost. Got: ${url || '(empty)'}`,
+      `db:reset refused — DATABASE_URL_ADMIN must point at localhost. Got: ${url || "(empty)"}`,
     );
   }
 
@@ -27,7 +27,7 @@ async function main(): Promise<void> {
     await db.execute(
       sql`ALTER DEFAULT PRIVILEGES FOR ROLE commons_admin IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO commons_app`,
     );
-    console.log('✓ public schema dropped + recreated. Run db:push next.');
+    console.log("✓ public schema dropped + recreated. Run db:push next.");
   } finally {
     await close();
   }

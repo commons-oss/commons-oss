@@ -1,6 +1,6 @@
-import { getConfig, hasLogtoConfig } from '../config.ts';
-import { pickActiveOrg, resolveIdentity } from '../provisioning.ts';
-import type { AuthProvider, SignInResult } from '../types.ts';
+import { getConfig, hasLogtoConfig } from "../config.ts";
+import { pickActiveOrg, resolveIdentity } from "../provisioning.ts";
+import type { AuthProvider, SignInResult } from "../types.ts";
 
 /**
  * Real-Logto provider. Phase 1 SCAFFOLD: the OAuth dance lives behind a
@@ -13,12 +13,12 @@ import type { AuthProvider, SignInResult } from '../types.ts';
  * then, `apps/shell` falls back to the StubProvider with a console.warn.
  */
 export class LogtoProvider implements AuthProvider {
-  readonly kind = 'logto' as const;
+  readonly kind = "logto" as const;
 
   constructor() {
     if (!hasLogtoConfig()) {
       throw new Error(
-        '[@commons-oss/auth] LogtoProvider requires LOGTO_ENDPOINT, LOGTO_APP_ID, and LOGTO_APP_SECRET.',
+        "[@commons-oss/auth] LogtoProvider requires LOGTO_ENDPOINT, LOGTO_APP_ID, and LOGTO_APP_SECRET.",
       );
     }
   }
@@ -28,7 +28,7 @@ export class LogtoProvider implements AuthProvider {
     //   - construct authorization URL with state + PKCE
     //   - 302 to Logto's /oidc/auth endpoint
     //   - state cookie set here, verified in handleCallback
-    return Promise.reject(notWired('beginSignIn'));
+    return Promise.reject(notWired("beginSignIn"));
   }
 
   async handleCallback(req: Request): Promise<SignInResult> {
@@ -44,7 +44,7 @@ export class LogtoProvider implements AuthProvider {
     const identity = await resolveIdentity({
       logtoSub: claims.sub,
       email: claims.email,
-      defaultLocale: 'de',
+      defaultLocale: "de",
     });
     const active = pickActiveOrg(identity.orgMemberships);
     const cfg = getConfig();
@@ -55,7 +55,7 @@ export class LogtoProvider implements AuthProvider {
         logtoSub: identity.logtoSub,
         orgId: active.orgId,
         orgSlug: active.orgSlug,
-        locale: 'de',
+        locale: "de",
         iat: now,
         exp: now + cfg.AUTH_SESSION_TTL,
       },
@@ -65,7 +65,7 @@ export class LogtoProvider implements AuthProvider {
 
   signOut(_req: Request): Promise<{ redirectTo: string }> {
     // TODO(Phase 1.5): hit Logto's /oidc/session/end with post_logout_redirect_uri.
-    return Promise.resolve({ redirectTo: '/' });
+    return Promise.resolve({ redirectTo: "/" });
   }
 }
 
@@ -78,5 +78,5 @@ function notWired(step: string): Error {
 function fetchClaimsTodo(_url: URL): Promise<{ sub: string; email: string }> {
   // Placeholder so handleCallback's body type-checks. Real impl exchanges
   // the `code` query param for tokens via @logto/next.
-  return Promise.reject(notWired('handleCallback'));
+  return Promise.reject(notWired("handleCallback"));
 }

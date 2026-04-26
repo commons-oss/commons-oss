@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { getSession } from '@commons-oss/auth';
+import { NextResponse, type NextRequest } from "next/server";
+import { getSession } from "@commons-oss/auth";
 
 /**
  * Next.js 16 proxy. Replaces the older `middleware.ts`. Runs in Node so we
@@ -24,8 +24,8 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
   const session = await getSession(req);
   if (!session) {
     const url = req.nextUrl.clone();
-    url.pathname = '/api/auth/sign-in';
-    url.search = '';
+    url.pathname = "/api/auth/sign-in";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 
@@ -33,11 +33,11 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
 }
 
 function isPublicPath(pathname: string): boolean {
-  if (pathname === '/' || pathname === '/favicon.ico') return true;
-  if (pathname.startsWith('/api/auth/')) return true;
-  if (pathname.startsWith('/api/v1/health')) return true;
-  if (pathname.startsWith('/_next/')) return true;
-  if (pathname.startsWith('/static/')) return true;
+  if (pathname === "/" || pathname === "/favicon.ico") return true;
+  if (pathname.startsWith("/api/auth/")) return true;
+  if (pathname.startsWith("/api/v1/health")) return true;
+  if (pathname.startsWith("/_next/")) return true;
+  if (pathname.startsWith("/static/")) return true;
   return false;
 }
 
@@ -45,6 +45,6 @@ export const config = {
   matcher: [
     // run on every path except Next internals + static files (handled above too,
     // belt-and-braces so we don't accidentally hit DB on every asset)
-    '/((?!_next/|static/|.*\\..*).*)',
+    "/((?!_next/|static/|.*\\..*).*)",
   ],
 };

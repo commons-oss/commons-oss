@@ -1,7 +1,7 @@
-import { hasLogtoConfig } from './config.ts';
-import { LogtoProvider } from './providers/logto.ts';
-import { StubProvider } from './providers/stub.ts';
-import type { AuthProvider } from './types.ts';
+import { hasLogtoConfig } from "./config.ts";
+import { LogtoProvider } from "./providers/logto.ts";
+import { StubProvider } from "./providers/stub.ts";
+import type { AuthProvider } from "./types.ts";
 
 let cached: AuthProvider | undefined;
 
@@ -21,15 +21,13 @@ export function getProvider(): AuthProvider {
   if (hasLogtoConfig()) {
     cached = new LogtoProvider();
   } else {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       throw new Error(
-        '[@commons-oss/auth] No LOGTO_* env vars set and NODE_ENV=production. Set Logto config or remove the prod gate explicitly.',
+        "[@commons-oss/auth] No LOGTO_* env vars set and NODE_ENV=production. Set Logto config or remove the prod gate explicitly.",
       );
     }
-    if (process.env.NODE_ENV !== 'test') {
-      console.warn(
-        '[@commons-oss/auth] LOGTO_* env not set — using StubProvider (dev only).',
-      );
+    if (process.env.NODE_ENV !== "test") {
+      console.warn("[@commons-oss/auth] LOGTO_* env not set — using StubProvider (dev only).");
     }
     cached = new StubProvider();
   }

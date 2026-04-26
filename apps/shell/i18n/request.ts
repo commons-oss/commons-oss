@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
-import { getRequestConfig } from 'next-intl/server';
-import { decodeSession, getConfig } from '@commons-oss/auth';
+import { cookies } from "next/headers";
+import { getRequestConfig } from "next-intl/server";
+import { decodeSession, getConfig } from "@commons-oss/auth";
 
 /**
  * Locale resolution: read the session cookie, fall back to `de`.
@@ -18,10 +18,10 @@ export default getRequestConfig(async () => {
   return { locale, messages: mod.default };
 });
 
-async function readLocaleFromSession(): Promise<'de' | 'en'> {
+async function readLocaleFromSession(): Promise<"de" | "en"> {
   const jar = await cookies();
   const token = jar.get(getConfig().AUTH_COOKIE_NAME)?.value;
-  if (!token) return 'de';
+  if (!token) return "de";
   const session = await decodeSession(token);
-  return session?.locale ?? 'de';
+  return session?.locale ?? "de";
 }

@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm';
-import { getDb, type DrizzleDb } from './client.ts';
+import { sql } from "drizzle-orm";
+import { getDb, type DrizzleDb } from "./client.ts";
 
 /**
  * The minimum context every request carries into the DB layer.
@@ -39,13 +39,9 @@ export async function withTenant<T>(
   return db.transaction(async (tx) => {
     // set_config('key', 'value', true) === SET LOCAL — true = tx-scoped.
     // Parameter binding avoids SQL injection on the GUC value path.
-    await tx.execute(
-      sql`SELECT set_config('app.current_org', ${ctx.org.id}, true)`,
-    );
+    await tx.execute(sql`SELECT set_config('app.current_org', ${ctx.org.id}, true)`);
     if (ctx.user) {
-      await tx.execute(
-        sql`SELECT set_config('app.current_user_id', ${ctx.user.id}, true)`,
-      );
+      await tx.execute(sql`SELECT set_config('app.current_user_id', ${ctx.user.id}, true)`);
     }
     return fn(tx as unknown as DrizzleDb);
   });

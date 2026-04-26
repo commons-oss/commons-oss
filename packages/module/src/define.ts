@@ -1,24 +1,24 @@
-import { z } from 'zod';
-import type {
-  ModuleDefinition,
-  Permission,
-} from './types.ts';
+import { z } from "zod";
+import type { ModuleDefinition, Permission } from "./types.ts";
 
 const moduleIdSchema = z
   .string()
   .min(2)
   .max(32)
-  .regex(/^[a-z][a-z0-9-]*$/, 'must be kebab-case starting with a letter');
+  .regex(/^[a-z][a-z0-9-]*$/, "must be kebab-case starting with a letter");
 
 const actionSchema = z
   .string()
   .min(1)
   .max(48)
-  .regex(/^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$/, 'must be kebab-case (dots allowed for resource segments)');
+  .regex(
+    /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$/,
+    "must be kebab-case (dots allowed for resource segments)",
+  );
 
 const semverSchema = z
   .string()
-  .regex(/^\d+\.\d+\.\d+(-[\w.]+)?$/, 'must be semver (e.g. 1.2.3 or 1.2.3-rc.1)');
+  .regex(/^\d+\.\d+\.\d+(-[\w.]+)?$/, "must be semver (e.g. 1.2.3 or 1.2.3-rc.1)");
 
 const localizedSchema = z.object({
   de: z.string().min(1),
@@ -30,13 +30,13 @@ const navItemSchema = z.object({
   label: localizedSchema,
   href: z.function(),
   icon: z.string().optional(),
-  group: z.enum(['main', 'admin']).optional(),
+  group: z.enum(["main", "admin"]).optional(),
   order: z.number().int().optional(),
 });
 
 const routeSchema = z.object({
   path: z.string(),
-  scope: z.enum(['org', 'team']),
+  scope: z.enum(["org", "team"]),
   perms: z.array(z.string()).optional(),
 });
 
@@ -57,15 +57,19 @@ const routeSchema = z.object({
 export function defineModule<const TPerms extends readonly Permission[]>(
   def: ModuleDefinition<TPerms[number]> & { perms: TPerms },
 ): ModuleDefinition<TPerms[number]> {
-  const id = parseOrThrow('<root>', moduleIdSchema, def.id, 'id');
+  const id = parseOrThrow("<root>", moduleIdSchema, def.id, "id");
   const fail = (path: string, message: string, hint: string): never => {
     throw new Error(`[${id}] ${path}: ${message}. Hint: ${hint}.`);
   };
 
-  parseOrThrow(id, semverSchema, def.version, 'version');
-  parseOrThrow(id, localizedSchema, def.name, 'name');
+  parseOrThrow(id, semverSchema, def.version, "version");
+  parseOrThrow(id, localizedSchema, def.name, "name");
   if (!def.messages?.de || !def.messages?.en) {
-    fail('messages', 'must include both `de` and `en` records', 'add empty objects if no strings yet');
+    fail(
+      "messages",
+      "must include both `de` and `en` records",
+      "add empty objects if no strings yet",
+    );
   }
 
   def.perms.forEach((p, i) => {
@@ -78,7 +82,7 @@ export function defineModule<const TPerms extends readonly Permission[]>(
     if (!parsed.success) {
       fail(
         `perms[${i}]`,
-        `'${p}' fails kebab-case rule (${parsed.error.issues[0]?.message ?? 'invalid'})`,
+        `'${p}' fails kebab-case rule (${parsed.error.issues[0]?.message ?? "invalid"})`,
         `use lowercase letters, digits, hyphens; e.g. '${prefix}record'`,
       );
     }
@@ -87,9 +91,13 @@ export function defineModule<const TPerms extends readonly Permission[]>(
   def.routes.forEach((r, i) => {
     const parsed = routeSchema.safeParse(r);
     if (!parsed.success) {
-      fail(`routes[${i}]`, parsed.error.issues[0]?.message ?? 'invalid', 'check the RouteSpec shape');
+      fail(
+        `routes[${i}]`,
+        parsed.error.issues[0]?.message ?? "invalid",
+        "check the RouteSpec shape",
+      );
     }
-    if (r.scope === 'team' && !r.path.includes(':teamId') && r.path !== '') {
+    if (r.scope === "team" && !r.path.includes(":teamId") && r.path !== "") {
       fail(
         `routes[${i}]`,
         `scope='team' but path '${r.path}' has no ':teamId' segment`,
@@ -110,24 +118,19 @@ export function defineModule<const TPerms extends readonly Permission[]>(
   def.nav.forEach((n, i) => {
     const parsed = navItemSchema.safeParse(n);
     if (!parsed.success) {
-      fail(`nav[${i}]`, parsed.error.issues[0]?.message ?? 'invalid', 'check the NavItem shape');
+      fail(`nav[${i}]`, parsed.error.issues[0]?.message ?? "invalid", "check the NavItem shape");
     }
   });
 
   return def;
 }
 
-function parseOrThrow<T>(
-  id: string,
-  schema: z.ZodType<T>,
-  value: unknown,
-  field: string,
-): T {
+function parseOrThrow<T>(id: string, schema: z.ZodType<T>, value: unknown, field: string): T {
   const parsed = schema.safeParse(value);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
     throw new Error(
-      `[${id}] ${field}: ${issue?.message ?? 'invalid'}. Hint: see @commons-oss/module ModuleDefinition type.`,
+      `[${id}] ${field}: ${issue?.message ?? "invalid"}. Hint: see @commons-oss/module ModuleDefinition type.`,
     );
   }
   return parsed.data;

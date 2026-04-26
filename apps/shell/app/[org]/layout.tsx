@@ -1,15 +1,15 @@
-import type { ReactNode } from 'react';
-import Link from 'next/link';
-import { getLocale, getTranslations } from 'next-intl/server';
-import { requireSession } from '~/src/ctx';
-import { registry } from '~/modules';
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { requireSession } from "~/src/ctx";
+import { registry } from "~/modules";
 
 interface Props {
   children: ReactNode;
   params: Promise<{ org: string }>;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 /**
  * Tenant shell. Two jobs:
@@ -22,34 +22,30 @@ export const dynamic = 'force-dynamic';
 export default async function OrgLayout({ children, params }: Props) {
   const { org } = await params;
   const session = await requireSession(org);
-  const locale = (await getLocale()) as 'de' | 'en';
-  const t = await getTranslations('shell');
+  const locale = (await getLocale()) as "de" | "en";
+  const t = await getTranslations("shell");
 
   const navItems = registry.modules
     .flatMap((m) => m.nav.map((n) => ({ ...n, moduleId: m.id })))
     .sort((a, b) => {
-      const g = (a.group ?? 'main').localeCompare(b.group ?? 'main');
+      const g = (a.group ?? "main").localeCompare(b.group ?? "main");
       if (g !== 0) return g;
       return (a.order ?? 0) - (b.order ?? 0);
     });
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <aside style={{ width: 240, padding: 16, borderRight: '1px solid #eee' }}>
-        <div style={{ fontWeight: 600, marginBottom: 16 }}>{t('appName')}</div>
-        <div style={{ fontSize: 12, color: '#666', marginBottom: 16 }}>
-          {session.orgSlug}
-        </div>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      <aside style={{ width: 240, padding: 16, borderRight: "1px solid #eee" }}>
+        <div style={{ fontWeight: 600, marginBottom: 16 }}>{t("appName")}</div>
+        <div style={{ fontSize: 12, color: "#666", marginBottom: 16 }}>{session.orgSlug}</div>
         <nav>
           {navItems.length === 0 ? (
-            <div style={{ fontSize: 12, color: '#999' }}>{t('noModules')}</div>
+            <div style={{ fontSize: 12, color: "#999" }}>{t("noModules")}</div>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {navItems.map((n) => (
                 <li key={`${n.moduleId}:${n.id}`}>
-                  <Link href={n.href({ orgSlug: org })}>
-                    {n.label[locale] ?? n.label.de}
-                  </Link>
+                  <Link href={n.href({ orgSlug: org })}>{n.label[locale] ?? n.label.de}</Link>
                 </li>
               ))}
             </ul>

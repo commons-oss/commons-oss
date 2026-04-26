@@ -1,0 +1,87 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: RLS guard
+        run: node scripts/check-rls.mjs
+
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm type-check
+      - run: pnpm test
+
+  rls-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: commons_admin
+          POSTGRES_PASSWORD: commons_admin
+          POSTGRES_DB: commons_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U commons_admin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL_ADMIN: postgres://commons_admin:commons_admin@localhost:5432/commons_test
+      DATABASE_URL: postgres://commons_app:commons_app@localhost:5432/commons_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Provision commons_app role
+        run: |
+          PGPASSWORD=commons_admin psql -h localhost -U commons_admin -d commons_test \
+            -c "CREATE ROLE commons_app LOGIN PASSWORD 'commons_app';"
+
+      - name: Reset schema + grants
+        run: pnpm --filter @commons-oss/db db:reset
+
+      - name: Apply migrations
+        run: pnpm --filter @commons-oss/db db:migrate
+
+      - name: Seed system roles
+        run: pnpm --filter @commons-oss/db db:seed:roles
+
+      - name: Run RLS integration tests
+        run: pnpm --filter @commons-oss/db test

@@ -1,6 +1,6 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema/index.ts';
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema/index.ts";
 
 /**
  * The application connection runs as `commons_app`, a non-superuser role
@@ -17,10 +17,10 @@ let _db: ReturnType<typeof drizzle<typeof schema>> | undefined;
 export type DrizzleDb = ReturnType<typeof drizzle<typeof schema>>;
 
 function resolveAppUrl(): string {
-  const url = process.env['DATABASE_URL'];
+  const url = process.env["DATABASE_URL"];
   if (!url) {
     throw new Error(
-      'DATABASE_URL is not set. Copy .env.example to .env.local and start the compose Postgres.',
+      "DATABASE_URL is not set. Copy .env.example to .env.local and start the compose Postgres.",
     );
   }
   return url;

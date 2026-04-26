@@ -7,9 +7,9 @@ helper that every request must go through, and the seed scripts.
 
 ## Two-role model
 
-| Role            | BYPASSRLS | Used by                                    |
-| --------------- | --------- | ------------------------------------------ |
-| `commons_admin` | yes       | migrations, seeds, anything cross-tenant   |
+| Role            | BYPASSRLS | Used by                                     |
+| --------------- | --------- | ------------------------------------------- |
+| `commons_admin` | yes       | migrations, seeds, anything cross-tenant    |
 | `commons_app`   | no        | the running app — RLS-enforced at all times |
 
 Both roles are seeded by `docker/postgres-init/00-roles.sql` for local
@@ -36,10 +36,10 @@ use `tenantOrSystemPolicy` so all tenants can read the system rows.
 Always:
 
 ```ts
-import { withTenant } from '@commons-oss/db';
+import { withTenant } from "@commons-oss/db";
 
 const result = await withTenant({ org: { id: orgId } }, async (tx) => {
-  return tx.select().from(person).where(eq(person.lastName, 'Mustermann'));
+  return tx.select().from(person).where(eq(person.lastName, "Mustermann"));
 });
 ```
 
@@ -61,16 +61,12 @@ without losing updates from concurrent writers — take a row lock:
 
 ```ts
 await withTenant(ctx, async (tx) => {
-  const [row] = await tx
-    .select()
-    .from(invoice)
-    .where(eq(invoice.id, invoiceId))
-    .for('update'); // SELECT ... FOR UPDATE — blocks other writers
+  const [row] = await tx.select().from(invoice).where(eq(invoice.id, invoiceId)).for("update"); // SELECT ... FOR UPDATE — blocks other writers
 
-  if (row.status === 'pending') {
+  if (row.status === "pending") {
     await tx
       .update(invoice)
-      .set({ status: 'paid', paidAt: new Date() })
+      .set({ status: "paid", paidAt: new Date() })
       .where(eq(invoice.id, invoiceId));
   }
 });
@@ -88,8 +84,7 @@ either:
 - pull it into a single statement with a `CHECK` or a trigger, or
 - bump the transaction to `SERIALIZABLE` and add a retry loop on
   Postgres error `40001` (serialization_failure). Drizzle exposes
-  `tx.execute(sql\`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE\`)`
-  inside `withTenant`.
+  `tx.execute(sql\`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE\`)`inside`withTenant`.
 
 Most modules will not need this. If you reach for it, document why in a
 comment.

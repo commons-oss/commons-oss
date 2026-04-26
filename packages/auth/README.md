@@ -5,10 +5,10 @@ and the provider abstraction. Real OAuth lives in providers.
 
 ## Two providers
 
-| Provider | When | Purpose |
-| --- | --- | --- |
-| `StubProvider` | local dev (no `LOGTO_*` env) | List `org_member` rows, click to sign in. Refuses in production. |
-| `LogtoProvider` | `LOGTO_*` env present | Real OIDC against [Logto](https://logto.io). Phase 1.5 wires `@logto/next` — currently throws on `beginSignIn` / `handleCallback`. |
+| Provider        | When                         | Purpose                                                                                                                            |
+| --------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `StubProvider`  | local dev (no `LOGTO_*` env) | List `org_member` rows, click to sign in. Refuses in production.                                                                   |
+| `LogtoProvider` | `LOGTO_*` env present        | Real OIDC against [Logto](https://logto.io). Phase 1.5 wires `@logto/next` — currently throws on `beginSignIn` / `handleCallback`. |
 
 `getProvider()` picks one. Production deploys without `LOGTO_*` set throw on
 boot — the stub is never silently used in production.
@@ -26,7 +26,9 @@ Locked attributes:
 Payload (`Session`):
 
 ```ts
-{ userId, logtoSub, orgId, orgSlug, iat, exp }
+{
+  (userId, logtoSub, orgId, orgSlug, iat, exp);
+}
 ```
 
 Tiny by design — anything else is fetched per request from the DB.
@@ -36,7 +38,7 @@ Tiny by design — anything else is fetched per request from the DB.
 Mount from `apps/shell/app/api/auth/<route>/route.ts`:
 
 ```ts
-import { handleSignIn, handleCallback, handleSignOut } from '@commons-oss/auth/route-handlers';
+import { handleSignIn, handleCallback, handleSignOut } from "@commons-oss/auth/route-handlers";
 
 export const GET = handleSignIn;
 // callback: GET for Logto's redirect, POST for the stub picker
@@ -52,10 +54,10 @@ Routes:
 ## How proxy.ts uses this
 
 ```ts
-import { getSession } from '@commons-oss/auth';
+import { getSession } from "@commons-oss/auth";
 
 const session = await getSession(request);
-if (!session) return Response.redirect(new URL('/api/auth/sign-in', request.url));
+if (!session) return Response.redirect(new URL("/api/auth/sign-in", request.url));
 // session.orgId is what pages feed into withTenant for the request
 ```
 

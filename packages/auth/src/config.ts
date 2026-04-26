@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Auth env contract. Reads on first access; throws with a friendly message
@@ -7,18 +7,20 @@ import { z } from 'zod';
  */
 const envSchema = z.object({
   /** Required for cookie signing. Must be ≥ 32 bytes (256-bit HS256 key). */
-  AUTH_SECRET: z
-    .string()
-    .min(32, 'AUTH_SECRET must be at least 32 characters (256-bit HS256 key)'),
+  AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters (256-bit HS256 key)"),
 
   /** Public origin used to build absolute callback URLs. */
-  AUTH_ORIGIN: z.string().url().default('http://localhost:3000'),
+  AUTH_ORIGIN: z.string().url().default("http://localhost:3000"),
 
   /** Cookie name. Stable default; override only if hosting multiple shells on the same apex. */
-  AUTH_COOKIE_NAME: z.string().default('commons.session'),
+  AUTH_COOKIE_NAME: z.string().default("commons.session"),
 
   /** Cookie max-age in seconds. Default 7 days. */
-  AUTH_SESSION_TTL: z.coerce.number().int().positive().default(60 * 60 * 24 * 7),
+  AUTH_SESSION_TTL: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(60 * 60 * 24 * 7),
 
   /** Logto vars — only required when provider = 'logto'. */
   LOGTO_ENDPOINT: z.string().url().optional(),
@@ -35,8 +37,8 @@ export function getConfig(): AuthConfig {
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
     const issues = parsed.error.issues
-      .map((i) => `  - ${i.path.join('.')}: ${i.message}`)
-      .join('\n');
+      .map((i) => `  - ${i.path.join(".")}: ${i.message}`)
+      .join("\n");
     throw new Error(
       `[@commons-oss/auth] invalid env:\n${issues}\n\nSee .env.example for required variables.`,
     );

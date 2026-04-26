@@ -19,33 +19,26 @@ v1.0 (Phase 5). Pre-v1, it can change without ceremony.
 ## Canonical module shape
 
 ```ts
-import { defineModule } from '@commons-oss/module';
+import { defineModule } from "@commons-oss/module";
 
-export const perms = [
-  'attendance.read',
-  'attendance.record',
-  'attendance.admin',
-] as const;
+export const perms = ["attendance.read", "attendance.record", "attendance.admin"] as const;
 
 export default defineModule({
-  id: 'attendance',
-  name: { de: 'Anwesenheit', en: 'Attendance' },
-  version: '0.1.0',
+  id: "attendance",
+  name: { de: "Anwesenheit", en: "Attendance" },
+  version: "0.1.0",
   perms,
   api: { routes: someHonoRouter },
-  messages: { de: { nav: 'Anwesenheit' }, en: { nav: 'Attendance' } },
-  routes: [
-    { path: '', scope: 'team', perms: ['attendance.read'] },
-  ],
+  messages: { de: { nav: "Anwesenheit" }, en: { nav: "Attendance" } },
+  routes: [{ path: "", scope: "team", perms: ["attendance.read"] }],
   nav: [
     {
-      id: 'attendance',
-      label: { de: 'Anwesenheit', en: 'Attendance' },
-      href: ({ orgSlug, teamId }) =>
-        `/${orgSlug}/${teamId}/attendance`,
+      id: "attendance",
+      label: { de: "Anwesenheit", en: "Attendance" },
+      href: ({ orgSlug, teamId }) => `/${orgSlug}/${teamId}/attendance`,
     },
   ],
-  auditRedact: ['note'],
+  auditRedact: ["note"],
 });
 ```
 
@@ -55,16 +48,16 @@ TypeScript error, not a runtime 403.
 
 ## What gets validated
 
-| Check | Failure shape |
-| --- | --- |
-| `id` kebab-case | `[<id>] id: must be kebab-case ...` |
-| `version` semver | `[<id>] version: must be semver ...` |
-| Each `perms[i]` starts with `<id>.` | `[<id>] perms[i]: '<p>' must start with '<id>.'. Hint: rename to '<id>.<action>'.` |
-| Action segment is kebab-case | `[<id>] perms[i]: '<p>' fails kebab-case rule ...` |
-| Team-scoped routes carry `:teamId` | `[<id>] routes[i]: scope='team' but path '<p>' has no ':teamId' segment ...` |
-| Route perms are declared in `perms[]` | `[<id>] routes[i].perms[j]: '<p>' is not declared ...` |
-| Cross-module duplicate ids | `[registry] duplicate module id '<id>'` |
-| Cross-module duplicate nav ids | `[registry] nav id '<n>' declared by both '<a>' and '<b>'` |
+| Check                                 | Failure shape                                                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `id` kebab-case                       | `[<id>] id: must be kebab-case ...`                                                |
+| `version` semver                      | `[<id>] version: must be semver ...`                                               |
+| Each `perms[i]` starts with `<id>.`   | `[<id>] perms[i]: '<p>' must start with '<id>.'. Hint: rename to '<id>.<action>'.` |
+| Action segment is kebab-case          | `[<id>] perms[i]: '<p>' fails kebab-case rule ...`                                 |
+| Team-scoped routes carry `:teamId`    | `[<id>] routes[i]: scope='team' but path '<p>' has no ':teamId' segment ...`       |
+| Route perms are declared in `perms[]` | `[<id>] routes[i].perms[j]: '<p>' is not declared ...`                             |
+| Cross-module duplicate ids            | `[registry] duplicate module id '<id>'`                                            |
+| Cross-module duplicate nav ids        | `[registry] nav id '<n>' declared by both '<a>' and '<b>'`                         |
 
 Hono prefix collisions are caught at mount time inside `apps/shell` — they
 need the actual router instances, not the `ApiSpec` shape.

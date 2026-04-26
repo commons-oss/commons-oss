@@ -1,6 +1,6 @@
-import { and, eq } from 'drizzle-orm';
-import { getDb } from '@commons-oss/db/internal';
-import { schema } from '@commons-oss/db';
+import { and, eq } from "drizzle-orm";
+import { getDb } from "@commons-oss/db/internal";
+import { schema } from "@commons-oss/db";
 
 /**
  * Auth provisioning runs BEFORE we know which org the caller belongs to.
@@ -33,7 +33,7 @@ export interface ResolvedIdentity {
 export async function resolveIdentity(input: {
   logtoSub: string;
   email: string;
-  defaultLocale?: 'de' | 'en';
+  defaultLocale?: "de" | "en";
 }): Promise<ResolvedIdentity> {
   const db = getDb();
 
@@ -50,7 +50,7 @@ export async function resolveIdentity(input: {
         .values({
           logtoSub: input.logtoSub,
           email: input.email,
-          defaultLocale: input.defaultLocale ?? 'de',
+          defaultLocale: input.defaultLocale ?? "de",
         })
         .returning()
     )[0];
@@ -68,12 +68,7 @@ export async function resolveIdentity(input: {
     })
     .from(schema.orgMember)
     .innerJoin(schema.org, eq(schema.org.id, schema.orgMember.orgId))
-    .where(
-      and(
-        eq(schema.orgMember.userId, userRow.id),
-        eq(schema.orgMember.status, 'active'),
-      ),
-    );
+    .where(and(eq(schema.orgMember.userId, userRow.id), eq(schema.orgMember.status, "active")));
 
   if (memberships.length === 0) {
     throw new Error(
@@ -98,7 +93,7 @@ export async function resolveIdentity(input: {
  * Future: respect a "last selected" preference, ?org= query param, etc.
  */
 export function pickActiveOrg(
-  memberships: ResolvedIdentity['orgMemberships'],
+  memberships: ResolvedIdentity["orgMemberships"],
   preferredId?: string,
 ): { orgId: string; orgSlug: string } {
   if (preferredId) {
@@ -106,6 +101,6 @@ export function pickActiveOrg(
     if (hit) return hit;
   }
   const first = memberships[0];
-  if (!first) throw new Error('[auth] pickActiveOrg called with empty memberships');
+  if (!first) throw new Error("[auth] pickActiveOrg called with empty memberships");
   return { orgId: first.orgId, orgSlug: first.orgSlug };
 }

@@ -4,15 +4,15 @@ The Next.js 16 host that mounts every module. Single deployable.
 
 ## What's here
 
-| Path | Purpose |
-| --- | --- |
-| `proxy.ts` | Next 16 proxy. Auth gate only — public paths pass through, everything else requires a valid session cookie. |
-| `app/api/auth/*` | Sign-in / callback / sign-out — thin wrappers over `@commons-oss/auth` route handlers. |
-| `app/api/v1/[[...route]]` | Hono mount point. Phase 1 ships `/health` + `/openapi.json`; modules attach their routers here. |
-| `app/[org]/layout.tsx` | Tenant shell — verifies session.orgSlug matches the URL slug, renders sidebar from registered modules' `nav`. |
-| `app/[org]/page.tsx` | Phase 1 placeholder dashboard. Demonstrates `withTenant` → RLS-scoped query inside an RSC. |
-| `modules.ts` | Static module registry. Add modules here; `buildRegistry` enforces id + nav-id uniqueness. |
-| `src/ctx.ts` | `readSession()` + `requireSession(slug)` helpers for RSCs. |
+| Path                      | Purpose                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `proxy.ts`                | Next 16 proxy. Auth gate only — public paths pass through, everything else requires a valid session cookie.   |
+| `app/api/auth/*`          | Sign-in / callback / sign-out — thin wrappers over `@commons-oss/auth` route handlers.                        |
+| `app/api/v1/[[...route]]` | Hono mount point. Phase 1 ships `/health` + `/openapi.json`; modules attach their routers here.               |
+| `app/[org]/layout.tsx`    | Tenant shell — verifies session.orgSlug matches the URL slug, renders sidebar from registered modules' `nav`. |
+| `app/[org]/page.tsx`      | Phase 1 placeholder dashboard. Demonstrates `withTenant` → RLS-scoped query inside an RSC.                    |
+| `modules.ts`              | Static module registry. Add modules here; `buildRegistry` enforces id + nav-id uniqueness.                    |
+| `src/ctx.ts`              | `readSession()` + `requireSession(slug)` helpers for RSCs.                                                    |
 
 ## Why proxy.ts can't open `withTenant` itself
 
@@ -30,4 +30,4 @@ This is fine because RLS is the floor: even if a page forgets to wrap, the GUC i
 pnpm dev    # http://localhost:3000
 ```
 
-Sign in via the stub provider (HTML user picker, dev only). NODE_ENV=production refuses the stub and requires `LOGTO_*` env vars.
+Sign in via the stub provider (HTML user picker, dev only). NODE*ENV=production refuses the stub and requires `LOGTO*\*` env vars.

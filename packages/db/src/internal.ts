@@ -12,4 +12,4 @@
  *
  * Everywhere else, use `withTenant`.
  */
-export { getClient, getDb } from './client.ts';
+export { getClient, getDb } from "./client.ts";

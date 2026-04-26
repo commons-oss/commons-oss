@@ -1,4 +1,4 @@
-import type { DrizzleDb } from '@commons-oss/db';
+import type { DrizzleDb } from "@commons-oss/db";
 
 export type ModuleId = string;
 
@@ -7,15 +7,10 @@ export type ModuleId = string;
  * length is ≤ 64. Four conventional actions get autocomplete via the union;
  * modules add domain verbs as needed without losing type safety.
  */
-export type PermissionAction =
-  | 'read'
-  | 'write'
-  | 'manage'
-  | 'admin'
-  | (string & {});
+export type PermissionAction = "read" | "write" | "manage" | "admin" | (string & {});
 export type Permission = `${ModuleId}.${PermissionAction}`;
 
-export type Locale = 'de' | 'en';
+export type Locale = "de" | "en";
 
 export interface LocalizedString {
   de: string;
@@ -46,7 +41,7 @@ export interface NavItem {
   href: (ctx: { orgSlug: string; teamId?: string }) => string;
   /** lucide-react icon name */
   icon?: string;
-  group?: 'main' | 'admin';
+  group?: "main" | "admin";
   order?: number;
 }
 
@@ -56,7 +51,7 @@ export interface RouteSpec {
    * file from `packages/modules/<id>/src/web/routes/<path>/page.tsx`.
    */
   path: string;
-  scope: 'org' | 'team';
+  scope: "org" | "team";
   /** Required perms (any-of). Omit for public-within-tenant routes. */
   perms?: readonly Permission[];
 }

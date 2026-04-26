@@ -1,5 +1,5 @@
-import { decodeSession, readCookieToken } from './cookie.ts';
-import type { Session } from './types.ts';
+import { decodeSession, readCookieToken } from "./cookie.ts";
+import type { Session } from "./types.ts";
 
 /**
  * Read + verify the session from a Request. Returns null if there is no

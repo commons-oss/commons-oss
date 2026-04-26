@@ -1,12 +1,12 @@
-import type { ReactNode } from 'react';
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import type { ReactNode } from "react";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
-  const t = await getTranslations('metadata');
+  const t = await getTranslations("metadata");
   return {
-    title: t('title'),
-    description: t('description'),
+    title: t("title"),
+    description: t("description"),
   };
 }
 

@@ -1,4 +1,4 @@
-import { buildRegistry, type ModuleDefinition } from '@commons-oss/module';
+import { buildRegistry, type ModuleDefinition } from "@commons-oss/module";
 
 /**
  * Phase 1: static module registry. Add modules here as they land:

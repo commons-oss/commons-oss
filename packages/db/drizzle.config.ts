@@ -1,9 +1,9 @@
-import { defineConfig } from 'drizzle-kit';
+import { defineConfig } from "drizzle-kit";
 
-const databaseUrl = process.env['DATABASE_URL_ADMIN'] ?? process.env['DATABASE_URL'];
+const databaseUrl = process.env["DATABASE_URL_ADMIN"] ?? process.env["DATABASE_URL"];
 if (!databaseUrl) {
   throw new Error(
-    'DATABASE_URL_ADMIN (or DATABASE_URL) must be set. See .env.example at repo root.',
+    "DATABASE_URL_ADMIN (or DATABASE_URL) must be set. See .env.example at repo root.",
   );
 }
 
@@ -17,9 +17,9 @@ if (!databaseUrl) {
  * role via `packages/db/src/client.ts`.
  */
 export default defineConfig({
-  dialect: 'postgresql',
-  schema: ['./src/schema/index.ts', '../modules/*/drizzle/schema.ts'],
-  out: './drizzle',
+  dialect: "postgresql",
+  schema: ["./src/schema/index.ts", "../modules/*/drizzle/schema.ts"],
+  out: "./drizzle",
   dbCredentials: { url: databaseUrl },
   strict: true,
   verbose: true,

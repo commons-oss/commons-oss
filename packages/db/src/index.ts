@@ -1,6 +1,6 @@
-export * as schema from './schema/index.ts';
-export { closeClient, type DrizzleDb } from './client.ts';
-export { scoped, withTenant, type TenantContext } from './rls.ts';
+export * as schema from "./schema/index.ts";
+export { closeClient, type DrizzleDb } from "./client.ts";
+export { scoped, withTenant, type TenantContext } from "./rls.ts";
 
 // `getDb` / `getClient` are deliberately NOT re-exported here. Module code
 // must go through `withTenant` so RLS is enforced. Plumbing that genuinely

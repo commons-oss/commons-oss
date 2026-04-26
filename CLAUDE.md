@@ -77,7 +77,7 @@ a real partnership team so this stays exercised end-to-end.
 - **i18n:** next-intl, default locale `de`, also `en`. All user-visible
   copy lives in message catalogs, not in JSX strings.
 - **Module contract:** `defineModule({ id, name, version, routes, nav,
-  api, schema, messages, perms, ... })` validated by Zod at boot. See
+api, schema, messages, perms, ... })` validated by Zod at boot. See
   the architecture plan §6.
 
 ## Local dev

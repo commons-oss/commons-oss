@@ -21,15 +21,15 @@ The Commons OSS mark is an anchor ring: eight slate dots arranged in a circle ar
 
 ## Color tokens
 
-| Token | Hex | Use |
-|---|---|---|
-| Slate | `#1f2937` | Primary text, mark perimeter dots, on-light surfaces |
-| Forest | `#3f7050` | The anchor dot, accent moments, brand color |
+| Token         | Hex       | Use                                                               |
+| ------------- | --------- | ----------------------------------------------------------------- |
+| Slate         | `#1f2937` | Primary text, mark perimeter dots, on-light surfaces              |
+| Forest        | `#3f7050` | The anchor dot, accent moments, brand color                       |
 | Forest bright | `#4a8a5f` | Favicon and small-size anchor only — improves contrast at 16-32px |
-| Mute | `#6b7280` | `OSS` in the wordmark, secondary text, captions |
-| Border | `#e5e7eb` | Hairlines, dividers, card borders |
-| Surface | `#ffffff` | Default light background |
-| Surface dark | `#1f2937` | Default dark background (same as slate) |
+| Mute          | `#6b7280` | `OSS` in the wordmark, secondary text, captions                   |
+| Border        | `#e5e7eb` | Hairlines, dividers, card borders                                 |
+| Surface       | `#ffffff` | Default light background                                          |
+| Surface dark  | `#1f2937` | Default dark background (same as slate)                           |
 
 Do not introduce a fourth brand color without intent. Status colors (success, warning, danger) are UI tokens, not brand tokens.
 
@@ -96,11 +96,11 @@ The PNGs in this repo were generated with cairosvg, which substitutes the system
 Drop this in your `<head>`:
 
 ```html
-<link rel="icon" type="image/svg+xml" href="/favicon-32.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png">
-<link rel="alternate icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon-32.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png" />
+<link rel="alternate icon" href="/favicon.ico" />
 ```
 
 ## CSS variables

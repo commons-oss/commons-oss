@@ -16,7 +16,7 @@ export interface Session {
   orgSlug: string;
   /** UI locale. Sourced from `user.default_locale` at sign-in; the user
    *  can flip it from the shell which re-mints the cookie. */
-  locale: 'de' | 'en';
+  locale: "de" | "en";
   /** Issued-at and expires-at as unix seconds. */
   iat: number;
   exp: number;
@@ -34,7 +34,7 @@ export interface SignInResult {
 
 export interface AuthProvider {
   /** Stable identifier for diagnostics. */
-  readonly kind: 'stub' | 'logto';
+  readonly kind: "stub" | "logto";
 
   /**
    * Begin the sign-in flow. For Logto this is a redirect to the OP; for the

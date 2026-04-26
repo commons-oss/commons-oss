@@ -1,12 +1,8 @@
-import {
-  clearedSessionCookie,
-  encodeSession,
-  sessionCookie,
-} from './cookie.ts';
-import { getConfig } from './config.ts';
-import { getProvider } from './provider.ts';
+import { clearedSessionCookie, encodeSession, sessionCookie } from "./cookie.ts";
+import { getConfig } from "./config.ts";
+import { getProvider } from "./provider.ts";
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === "production";
 
 /**
  * Mount these from `apps/shell/app/api/auth/<route>/route.ts`. They wrap the
@@ -28,7 +24,7 @@ export async function handleCallback(req: Request): Promise<Response> {
   const cfg = getConfig();
   const token = await encodeSession(result.session);
   const headers = new Headers({
-    'Set-Cookie': sessionCookie(token, cfg.AUTH_SESSION_TTL, isProd),
+    "Set-Cookie": sessionCookie(token, cfg.AUTH_SESSION_TTL, isProd),
     Location: result.redirectTo ?? `/${result.session.orgSlug}`,
   });
   return new Response(null, { status: 302, headers });
@@ -37,7 +33,7 @@ export async function handleCallback(req: Request): Promise<Response> {
 export async function handleSignOut(req: Request): Promise<Response> {
   const { redirectTo } = await getProvider().signOut(req);
   const headers = new Headers({
-    'Set-Cookie': clearedSessionCookie(isProd),
+    "Set-Cookie": clearedSessionCookie(isProd),
     Location: redirectTo,
   });
   return new Response(null, { status: 302, headers });

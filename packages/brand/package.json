@@ -8,7 +8,9 @@
     "url": "https://github.com/commons-oss/commons-oss.git",
     "directory": "packages/brand"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "files": [
     "logo",
     "tokens.css",
