@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { schema, withTenant } from "@commons-oss/db";
 import { requireSession } from "~/src/ctx";
 
@@ -20,7 +20,6 @@ export const dynamic = "force-dynamic";
 export default async function OrgDashboard({ params }: Props) {
   const { org } = await params;
   const session = await requireSession(org);
-  const locale = (await getLocale()) as "de" | "en";
   const t = await getTranslations("shell");
 
   const rows = await withTenant(
@@ -33,10 +32,7 @@ export default async function OrgDashboard({ params }: Props) {
   );
 
   const o = rows[0];
-  const displayName =
-    (o?.name as Record<string, string> | undefined)?.[locale] ??
-    (o?.name as Record<string, string> | undefined)?.de ??
-    t("unknownOrg");
+  const displayName = o?.name ?? t("unknownOrg");
 
   return (
     <div>
