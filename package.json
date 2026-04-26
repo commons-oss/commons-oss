@@ -22,7 +22,8 @@
     "db:seed": "pnpm --filter @commons-oss/db db:seed:roles && pnpm --filter @commons-oss/db db:seed:dogfood",
     "db:reset": "pnpm --filter @commons-oss/db db:reset",
     "test": "turbo run test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "node scripts/link-app-envs.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",

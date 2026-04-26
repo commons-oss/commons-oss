@@ -16,7 +16,6 @@
     "@commons-oss/db": "workspace:*",
     "@commons-oss/module": "workspace:*",
     "@hono/zod-openapi": "^0.19.10",
-    "@next/env": "^16.2.4",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.15",
     "next": "^16.2.4",

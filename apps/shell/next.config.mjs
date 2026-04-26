@@ -1,13 +1,4 @@
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import nextEnv from "@next/env";
 import createNextIntlPlugin from "next-intl/plugin";
-
-// Load .env files from the workspace root so the shell shares one env
-// file with db:migrate / db:seed scripts run from the repo root.
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const workspaceRoot = path.resolve(__dirname, "../..");
-nextEnv.loadEnvConfig(workspaceRoot);
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
