@@ -1,0 +1,12 @@
+{
+  "name": "@commons-oss/config-tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "node-library.json",
+    "react-library.json"
+  ]
+}

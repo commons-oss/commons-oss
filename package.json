@@ -14,10 +14,19 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@commons-oss/config-eslint": "workspace:*",
+    "@commons-oss/config-tsconfig": "workspace:*",
+    "eslint": "^9.18.0",
+    "husky": "^9.1.7",
     "prettier": "^3.4.2",
-    "turbo": "^2.3.3"
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3"
   }
 }
