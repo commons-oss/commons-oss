@@ -19,6 +19,8 @@ import {
  * to prove the partnership path end-to-end.
  *
  * Max Mustermann as the multi-role example (Reserve player, U15 coach, treasurer).
+ * Sabine Vorstand as the officer-only example, so the officer landing
+ * (Phase 2 D1 overview) can be smoke-tested without coach noise.
  *
  * Idempotent — safe to re-run. Re-uses rows by natural keys.
  */
@@ -186,7 +188,28 @@ async function main(): Promise<void> {
       title: "Kassier",
     });
 
-    console.log("✓ dogfood seeded: FC Musterstadt + 1 partnership team + Max multi-role");
+    // 7. Officer-only user — Sabine Vorstand. No team memberships, no
+    //    coach role; lands on the admin surface only. Lets us smoke-test
+    //    the officer persona without coach-side noise.
+    const sabineUser = await upsertUser(db, {
+      logtoSub: "dogfood|sabine-vorstand",
+      email: "sabine.vorstand@example.test",
+    });
+    const sabineMember = await upsertOrgMember(db, {
+      orgId: demoOrg.id,
+      userId: sabineUser.id,
+    });
+    await upsertMemberRole(db, {
+      orgId: demoOrg.id,
+      memberId: sabineMember.id,
+      roleId: officerRoleId,
+      teamId: null,
+      title: "Obfrau",
+    });
+
+    console.log(
+      "✓ dogfood seeded: FC Musterstadt + 1 partnership team + Max multi-role + Sabine officer",
+    );
   } finally {
     await close();
   }

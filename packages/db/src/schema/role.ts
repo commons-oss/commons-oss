@@ -73,7 +73,9 @@ export const memberRole = pgTable(
     ...timestamps,
   },
   (t) => [
-    unique("member_role_unique").on(t.memberId, t.roleId, t.teamId),
+    // NULLS NOT DISTINCT so org-scoped roles (team_id IS NULL) collapse on
+    // upsert instead of stacking duplicates each reseed.
+    unique("member_role_unique").on(t.memberId, t.roleId, t.teamId).nullsNotDistinct(),
     tenantPolicy("member_role"),
   ],
 ).enableRLS();
