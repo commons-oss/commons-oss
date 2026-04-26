@@ -61,7 +61,7 @@ export const rolePermission = pgTable(
 ).enableRLS();
 
 /**
- * Hans-style multi-role: one verein_user can hold N (role, mannschaft, title)
+ * Multi-role: one verein_user can hold N (role, mannschaft, title)
  * combinations. mannschaft_id required when role.scope='mannschaft' (CHECK enforced
  * via app code today; Phase 3 may move to a function-based check).
  */

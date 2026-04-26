@@ -14,11 +14,11 @@ import {
 } from '../schema/index.ts';
 
 /**
- * Dogfood seed. UFC Wettmannstätten as the operating Verein.
- * One SG (Spielgemeinschaft) Mannschaft (U13) with FC Eibiswald as
- * an external_verein partner — to prove the SG path end-to-end.
+ * Dogfood seed. Generic demo Verein (FC Musterstadt) as the operating tenant.
+ * One SG (Spielgemeinschaft) Mannschaft (U13) with SV Nachbarort as an
+ * external_verein partner — to prove the SG path end-to-end.
  *
- * Hans Müller as the multi-role example (Reserve player, U15 Trainer, Kassier).
+ * Max Mustermann as the multi-role example (Reserve player, U15 Trainer, Kassier).
  *
  * Idempotent — safe to re-run. Re-uses rows by natural keys.
  */
@@ -27,85 +27,85 @@ async function main(): Promise<void> {
   const { db, close } = getAdminDb();
   try {
     // 1. Operating Verein
-    const ufc = await upsertVerein(db, {
-      slug: 'ufc-wettmannstaetten',
-      name: 'UFC Wettmannstätten',
+    const demoVerein = await upsertVerein(db, {
+      slug: 'fc-musterstadt',
+      name: 'FC Musterstadt',
     });
 
-    // 2. External partner (FC Eibiswald — SG U13 partner, NOT on the platform)
-    const eibiswald = await upsertExternalVerein(db, {
-      vereinId: ufc.id,
-      name: 'FC Eibiswald',
-      contactEmail: 'office@fc-eibiswald.example',
+    // 2. External partner (SV Nachbarort — SG U13 partner, NOT on the platform)
+    const partner = await upsertExternalVerein(db, {
+      vereinId: demoVerein.id,
+      name: 'SV Nachbarort',
+      contactEmail: 'office@sv-nachbarort.example',
     });
 
     // 3. Mannschaften
     const reserve = await upsertMannschaft(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       name: 'Reserve',
       kind: 'reserve',
     });
     const u15 = await upsertMannschaft(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       name: 'U15',
       kind: 'nachwuchs',
     });
     const u13Sg = await upsertMannschaft(db, {
-      vereinId: ufc.id,
-      name: 'U13 SG Wettmannstätten/Eibiswald',
+      vereinId: demoVerein.id,
+      name: 'U13 SG Musterstadt/Nachbarort',
       kind: 'nachwuchs',
       isSg: true,
     });
 
     // 4. SG partner record for the U13
     await upsertMannschaftPartner(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       mannschaftId: u13Sg.id,
-      partnerExternalId: eibiswald.id,
+      partnerExternalId: partner.id,
     });
 
-    // 5. People — Hans (Reserve player + U15 trainer) and one SG kid attributed to FC Eibiswald
-    const hans = await upsertPerson(db, {
-      vereinId: ufc.id,
-      firstName: 'Hans',
-      lastName: 'Müller',
+    // 5. People — Max (Reserve player + U15 trainer) and one SG kid attributed to the partner
+    const max = await upsertPerson(db, {
+      vereinId: demoVerein.id,
+      firstName: 'Max',
+      lastName: 'Mustermann',
       bornOn: '1992-04-12',
     });
-    const lukas = await upsertPerson(db, {
-      vereinId: ufc.id,
-      firstName: 'Lukas',
-      lastName: 'Schober',
+    const sgKid = await upsertPerson(db, {
+      vereinId: demoVerein.id,
+      firstName: 'Anna',
+      lastName: 'Beispiel',
       bornOn: '2012-08-03',
-      attributionExternalId: eibiswald.id,
+      attributionExternalId: partner.id,
     });
 
     await upsertMembership(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       mannschaftId: reserve.id,
-      personId: hans.id,
+      personId: max.id,
       kind: 'player',
     });
     await upsertMembership(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       mannschaftId: u15.id,
-      personId: hans.id,
+      personId: max.id,
       kind: 'staff',
     });
     await upsertMembership(db, {
-      vereinId: ufc.id,
+      vereinId: demoVerein.id,
       mannschaftId: u13Sg.id,
-      personId: lukas.id,
+      personId: sgKid.id,
       kind: 'player',
     });
 
     // 6. User + verein_user + multi-role
-    const hansUser = await upsertUser(db, {
-      logtoSub: 'dogfood|hans-mueller',
-      email: 'hans.mueller@example.test',
+    const maxUser = await upsertUser(db, {
+      logtoSub: 'dogfood|max-mustermann',
+      email: 'max.mustermann@example.test',
     });
-    const hansVu = await upsertVereinUser(db, {
-      vereinId: ufc.id,
-      userId: hansUser.id,
+    const maxVu = await upsertVereinUser(db, {
+      vereinId: demoVerein.id,
+      userId: maxUser.id,
     });
 
     const trainerRoleId = await getSystemRoleId(db, 'trainer');
@@ -113,28 +113,28 @@ async function main(): Promise<void> {
     const funktionaerRoleId = await getSystemRoleId(db, 'funktionaer');
 
     await upsertVereinUserRole(db, {
-      vereinId: ufc.id,
-      vereinUserId: hansVu.id,
+      vereinId: demoVerein.id,
+      vereinUserId: maxVu.id,
       roleId: spielerRoleId,
       mannschaftId: reserve.id,
       title: 'IV',
     });
     await upsertVereinUserRole(db, {
-      vereinId: ufc.id,
-      vereinUserId: hansVu.id,
+      vereinId: demoVerein.id,
+      vereinUserId: maxVu.id,
       roleId: trainerRoleId,
       mannschaftId: u15.id,
       title: 'Cheftrainer',
     });
     await upsertVereinUserRole(db, {
-      vereinId: ufc.id,
-      vereinUserId: hansVu.id,
+      vereinId: demoVerein.id,
+      vereinUserId: maxVu.id,
       roleId: funktionaerRoleId,
       mannschaftId: null,
       title: 'Kassier',
     });
 
-    console.log('✓ dogfood seeded: UFC Wettmannstätten + 1 SG Mannschaft + Hans multi-role');
+    console.log('✓ dogfood seeded: FC Musterstadt + 1 SG Mannschaft + Max multi-role');
   } finally {
     await close();
   }

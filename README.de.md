@@ -59,8 +59,8 @@ pnpm db:migrate && pnpm db:seed
 Damit läuft ein Postgres auf `localhost:5433` mit zwei Rollen
 (`commons_admin` BYPASSRLS für Migrations + Seeds, `commons_app` für den
 App-Traffic), das Schema ist angewendet, die System-Rollen sind geseedet,
-und ein UFC-Wettmannstätten-Dogfood-Mandant (inklusive einer
-Spielgemeinschaft mit FC Eibiswald) ist startklar.
+und ein generischer Demo-Mandant (FC Musterstadt mit einer
+Spielgemeinschaft zu SV Nachbarort) ist startklar.
 
 Mandanten-Trennung wird in der Datenbank über Row-Level Security
 erzwungen. App-Code greift nie direkt auf die DB zu, sondern immer über

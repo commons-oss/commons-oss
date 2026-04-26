@@ -39,7 +39,7 @@ Always:
 import { withTenant } from '@commons-oss/db';
 
 const result = await withTenant({ verein: { id: vereinId } }, async (tx) => {
-  return tx.select().from(person).where(eq(person.lastName, 'Müller'));
+  return tx.select().from(person).where(eq(person.lastName, 'Mustermann'));
 });
 ```
 
@@ -117,7 +117,7 @@ happy.
 
 ```bash
 pnpm db:seed:roles     # idempotent — system roles + permissions
-pnpm db:seed:dogfood   # idempotent — UFC Wettmannstätten + 1 SG Mannschaft
+pnpm db:seed:dogfood   # idempotent — FC Musterstadt + 1 SG Mannschaft
 pnpm db:seed           # both, in order
 ```
 

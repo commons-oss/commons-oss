@@ -58,9 +58,9 @@ pnpm db:migrate && pnpm db:seed
 
 That gives you a Postgres on `localhost:5433` with two roles
 (`commons_admin` BYPASSRLS for migrations + seeds, `commons_app` for app
-traffic), the schema applied, system roles seeded, and a UFC
-Wettmannstätten dogfood tenant (including one Spielgemeinschaft with FC
-Eibiswald) ready to play with.
+traffic), the schema applied, system roles seeded, and a generic demo
+tenant (FC Musterstadt with one Spielgemeinschaft to SV Nachbarort)
+ready to play with.
 
 Tenant isolation is enforced at the database via Row-Level Security.
 Application code never queries the DB directly — it goes through

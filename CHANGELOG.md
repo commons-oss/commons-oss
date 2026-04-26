@@ -17,7 +17,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 - `.env.example` at repo root, `dotenv-cli` wired into `db:*` scripts.
 - Root `db:generate`, `db:migrate`, `db:seed`, `db:reset`, `db:push`, `test` scripts.
 - Idempotent system-role seed (`vereinsadmin`, `funktionaer`, `trainer`, `spieler`, `eltern`, `readonly`).
-- Dogfood seed: UFC Wettmannstätten as the operating Verein, FC Eibiswald as an `external_verein` partner, one SG (U13) Mannschaft, Hans Müller as the multi-role example (Reserve player + U15 Cheftrainer + Kassier), Lukas Schober attributed to FC Eibiswald to exercise the SG path end-to-end.
+- Dogfood seed: a generic demo Verein (FC Musterstadt) as the operating tenant, SV Nachbarort as an `external_verein` partner, one SG (U13) Mannschaft, Max Mustermann as the multi-role example (Reserve player + U15 Cheftrainer + Kassier), Anna Beispiel attributed to SV Nachbarort to exercise the SG path end-to-end.
 - Shared ESLint flat config (`@commons-oss/config-eslint`) and TS configs (`@commons-oss/config-tsconfig`).
 - Conventional Commits enforced via commitlint + husky `commit-msg` hook.
 - Root `AGENTS.md` (pointer to `CLAUDE.md`).
