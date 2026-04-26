@@ -10,7 +10,7 @@ const envSchema = z.object({
   AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters (256-bit HS256 key)"),
 
   /** Public origin used to build absolute callback URLs. */
-  AUTH_ORIGIN: z.string().url().default("http://localhost:3000"),
+  AUTH_ORIGIN: z.string().url().default("http://localhost:3100"),
 
   /** Cookie name. Stable default; override only if hosting multiple shells on the same apex. */
   AUTH_COOKIE_NAME: z.string().default("commons.session"),

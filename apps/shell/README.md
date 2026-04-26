@@ -27,7 +27,7 @@ This is fine because RLS is the floor: even if a page forgets to wrap, the GUC i
 ## Dev
 
 ```bash
-pnpm dev    # http://localhost:3000
+pnpm dev    # http://localhost:3100
 ```
 
 Sign in via the stub provider (HTML user picker, dev only). NODE*ENV=production refuses the stub and requires `LOGTO*\*` env vars.
