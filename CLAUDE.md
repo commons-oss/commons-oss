@@ -1,6 +1,6 @@
-# Commons OSS — brand handover
+# Commons OSS — agent handover
 
-Context for Claude Code or any agent picking up brand work on this project.
+Context for Claude Code or any agent working on this repo.
 
 ## Project at a glance
 
@@ -10,6 +10,98 @@ Context for Claude Code or any agent picking up brand work on this project.
 - **Stack:** Next.js 16, Postgres, Logto auth, shadcn/ui, self-hostable, Vercel-deployable
 - **License:** AGPL-3.0 + CLA + commercial license (Cal.com / GitLab playbook)
 - **Tagline:** Open-source tools, held in common, for the people who run clubs.
+
+## Architecture plan (READ THIS FIRST)
+
+The full monorepo + module architecture is specified in
+`projects/commons-oss/plans/monorepo-module-architecture.md` in the
+**brain** repo (`~/brain/projects/commons-oss/plans/`). Treat that file as
+the source of truth for layering, package boundaries, the module contract,
+RLS rules, the Spielgemeinschaft (SG) data model, and Phase 1 → Phase 6
+sequencing. Do not invent architecture decisions that contradict it. If
+the plan is wrong, propose an edit to the plan first, ship the code
+second.
+
+## Engineering rules
+
+These are **load-bearing**. Violating them will be caught in review.
+
+### Tenant isolation (RLS)
+
+- Every Verein-scoped table has Row-Level Security enabled and a policy
+  filtering by `current_setting('app.current_verein', true)::uuid`.
+- The app connection runs as `commons_app` (no BYPASSRLS). Migrations
+  and seeds run as `commons_admin` (BYPASSRLS).
+- **Application code never queries the DB outside `withTenant(ctx, fn)`**
+  from `@commons-oss/db`. That helper opens a transaction and sets the
+  GUC the policies read.
+- `current_setting(..., true)` returns NULL when unset, so a missed
+  `withTenant` returns zero rows, not another tenant's rows. There is an
+  RLS smoke test in `packages/db/test/rls.test.ts` that proves this.
+  Don't break it.
+
+### Spielgemeinschaft (SG) is first-class
+
+A Spielgemeinschaft is one Mannschaft drawn from multiple Vereine, where
+typically only one of those Vereine is on Commons OSS. The schema models
+this with:
+
+- `external_verein` — per-tenant registry of partner clubs not on the
+  platform. Promoted to a real `verein` row if they later join (the
+  `promoted_to_verein_id` column preserves attribution history).
+- `mannschaft.is_sg` flag + `mannschaft_partner` join table.
+- `person.attribution_verein_id` / `person.attribution_external_id` —
+  used for SG accounting (which Verein gets credit for which player's
+  attendance, training hours, funding-relevant data).
+
+Don't treat SG as an edge case. The dogfood seed creates a real SG
+Mannschaft so this stays exercised end-to-end.
+
+### Frontend / backend defaults
+
+- **Next.js 16, App Router.** Use `proxy.ts`, NOT `middleware.ts`
+  (Next.js 16 pattern).
+- **Mutations go through Hono** at `/api/v1/*`. RSC reads MAY call
+  `packages/api` directly.
+- **Forms:** React Hook Form + Zod v3. **Not Zod v4** (breaks
+  `@hookform/resolvers`).
+- **i18n:** next-intl, default locale `de`, also `en`. All user-visible
+  copy lives in message catalogs, not in JSX strings.
+- **Module contract:** `defineModule({ id, name, version, routes, nav,
+  api, schema, messages, perms, ... })` validated by Zod at boot. See
+  the architecture plan §6.
+
+## Local dev
+
+See `README.md` for the 4-command quickstart. TL;DR:
+
+```bash
+pnpm install
+cp .env.example .env.local
+docker compose up -d
+pnpm db:migrate && pnpm db:seed
+```
+
+Postgres on `localhost:5433` (5432 is reserved for other local Postgres
+instances). Both `commons_admin` and `commons_app` roles are seeded by
+`docker/postgres-init/00-roles.sql`.
+
+## Commit conventions
+
+Conventional commits are enforced by commitlint + husky.
+
+- **Format:** `type(scope): subject` (lowercase subject).
+- **Common types:** `feat`, `fix`, `docs`, `chore`, `refactor`, `test`,
+  `build`, `ci`, `perf`, `style`, `revert`.
+- **Common scopes:** `brand`, `shell`, `module`, `modules`, `api`,
+  `auth`, `db`, `ui`, `i18n`, `sdk`, `config`, `ci`, `deps`, `docs`,
+  `release`, `repo`. Scope-enum is warn-only — add a new scope if
+  nothing fits, don't shoehorn.
+- **Header max:** 100 chars.
+- **No `Co-Authored-By:` trailers.** Don't add Claude or any agent as a
+  co-author.
+
+## Brand handover
 
 ## Brand state — locked as of 2026-04-25
 

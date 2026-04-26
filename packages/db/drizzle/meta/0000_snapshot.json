@@ -1,0 +1,1652 @@
+{
+  "id": "02e550c1-4f0d-4562-aebe-1b450de5b85f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.audit_log": {
+      "name": "audit_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_user_id": {
+          "name": "actor_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_table": {
+          "name": "target_table",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_id": {
+          "name": "target_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "diff": {
+          "name": "diff",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "audit_log_verein_id_verein_id_fk": {
+          "name": "audit_log_verein_id_verein_id_fk",
+          "tableFrom": "audit_log",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "audit_log_actor_user_id_user_id_fk": {
+          "name": "audit_log_actor_user_id_user_id_fk",
+          "tableFrom": "audit_log",
+          "tableTo": "user",
+          "columnsFrom": [
+            "actor_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "audit_log_tenant": {
+          "name": "audit_log_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.mannschaft": {
+      "name": "mannschaft",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sektion": {
+          "name": "sektion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'fussball'"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "mannschaft_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'sonstige'"
+        },
+        "is_sg": {
+          "name": "is_sg",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mannschaft_verein_id_verein_id_fk": {
+          "name": "mannschaft_verein_id_verein_id_fk",
+          "tableFrom": "mannschaft",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "mannschaft_name_per_tenant": {
+          "name": "mannschaft_name_per_tenant",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "name"
+          ]
+        }
+      },
+      "policies": {
+        "mannschaft_tenant": {
+          "name": "mannschaft_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.mannschaft_partner": {
+      "name": "mannschaft_partner",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mannschaft_id": {
+          "name": "mannschaft_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "partner_verein_id": {
+          "name": "partner_verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partner_external_id": {
+          "name": "partner_external_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mannschaft_partner_verein_id_verein_id_fk": {
+          "name": "mannschaft_partner_verein_id_verein_id_fk",
+          "tableFrom": "mannschaft_partner",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "mannschaft_partner_mannschaft_id_mannschaft_id_fk": {
+          "name": "mannschaft_partner_mannschaft_id_mannschaft_id_fk",
+          "tableFrom": "mannschaft_partner",
+          "tableTo": "mannschaft",
+          "columnsFrom": [
+            "mannschaft_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "mannschaft_partner_partner_verein_id_verein_id_fk": {
+          "name": "mannschaft_partner_partner_verein_id_verein_id_fk",
+          "tableFrom": "mannschaft_partner",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "partner_verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "mannschaft_partner_partner_external_id_external_verein_id_fk": {
+          "name": "mannschaft_partner_partner_external_id_external_verein_id_fk",
+          "tableFrom": "mannschaft_partner",
+          "tableTo": "external_verein",
+          "columnsFrom": [
+            "partner_external_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "mannschaft_partner_tenant": {
+          "name": "mannschaft_partner_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {
+        "mannschaft_partner_exactly_one": {
+          "name": "mannschaft_partner_exactly_one",
+          "value": "(\"mannschaft_partner\".\"partner_verein_id\" IS NOT NULL)::int + (\"mannschaft_partner\".\"partner_external_id\" IS NOT NULL)::int = 1"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.mannschaft_membership": {
+      "name": "mannschaft_membership",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mannschaft_id": {
+          "name": "mannschaft_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "person_id": {
+          "name": "person_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "mannschaft_membership_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'player'"
+        },
+        "starts_on": {
+          "name": "starts_on",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ends_on": {
+          "name": "ends_on",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mannschaft_membership_verein_id_verein_id_fk": {
+          "name": "mannschaft_membership_verein_id_verein_id_fk",
+          "tableFrom": "mannschaft_membership",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "mannschaft_membership_mannschaft_id_mannschaft_id_fk": {
+          "name": "mannschaft_membership_mannschaft_id_mannschaft_id_fk",
+          "tableFrom": "mannschaft_membership",
+          "tableTo": "mannschaft",
+          "columnsFrom": [
+            "mannschaft_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "mannschaft_membership_person_id_person_id_fk": {
+          "name": "mannschaft_membership_person_id_person_id_fk",
+          "tableFrom": "mannschaft_membership",
+          "tableTo": "person",
+          "columnsFrom": [
+            "person_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "mannschaft_membership_unique": {
+          "name": "mannschaft_membership_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mannschaft_id",
+            "person_id",
+            "kind"
+          ]
+        }
+      },
+      "policies": {
+        "mannschaft_membership_tenant": {
+          "name": "mannschaft_membership_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.person": {
+      "name": "person",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "born_on": {
+          "name": "born_on",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jersey_number": {
+          "name": "jersey_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_url": {
+          "name": "photo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "person_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "attribution_verein_id": {
+          "name": "attribution_verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attribution_external_id": {
+          "name": "attribution_external_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "person_verein_id_verein_id_fk": {
+          "name": "person_verein_id_verein_id_fk",
+          "tableFrom": "person",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "person_attribution_verein_id_verein_id_fk": {
+          "name": "person_attribution_verein_id_verein_id_fk",
+          "tableFrom": "person",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "attribution_verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "person_attribution_external_id_external_verein_id_fk": {
+          "name": "person_attribution_external_id_external_verein_id_fk",
+          "tableFrom": "person",
+          "tableTo": "external_verein",
+          "columnsFrom": [
+            "attribution_external_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "person_tenant": {
+          "name": "person_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {
+        "person_attribution_at_most_one": {
+          "name": "person_attribution_at_most_one",
+          "value": "(\"person\".\"attribution_verein_id\" IS NOT NULL)::int + (\"person\".\"attribution_external_id\" IS NOT NULL)::int <= 1"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.person_guardian": {
+      "name": "person_guardian",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "guardian_person_id": {
+          "name": "guardian_person_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "child_person_id": {
+          "name": "child_person_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relation": {
+          "name": "relation",
+          "type": "guardian_relation",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "person_guardian_verein_id_verein_id_fk": {
+          "name": "person_guardian_verein_id_verein_id_fk",
+          "tableFrom": "person_guardian",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "person_guardian_guardian_person_id_person_id_fk": {
+          "name": "person_guardian_guardian_person_id_person_id_fk",
+          "tableFrom": "person_guardian",
+          "tableTo": "person",
+          "columnsFrom": [
+            "guardian_person_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "person_guardian_child_person_id_person_id_fk": {
+          "name": "person_guardian_child_person_id_person_id_fk",
+          "tableFrom": "person_guardian",
+          "tableTo": "person",
+          "columnsFrom": [
+            "child_person_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "person_guardian_unique": {
+          "name": "person_guardian_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "guardian_person_id",
+            "child_person_id"
+          ]
+        }
+      },
+      "policies": {
+        "person_guardian_tenant": {
+          "name": "person_guardian_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {
+        "person_guardian_no_self": {
+          "name": "person_guardian_no_self",
+          "value": "\"person_guardian\".\"guardian_person_id\" <> \"person_guardian\".\"child_person_id\""
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.role": {
+      "name": "role",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "role_scope",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_system": {
+          "name": "is_system",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "role_verein_id_verein_id_fk": {
+          "name": "role_verein_id_verein_id_fk",
+          "tableFrom": "role",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "role_key_per_scope": {
+          "name": "role_key_per_scope",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "key"
+          ]
+        }
+      },
+      "policies": {
+        "role_tenant_or_system": {
+          "name": "role_tenant_or_system",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {
+        "role_system_implies_null_verein": {
+          "name": "role_system_implies_null_verein",
+          "value": "(\"role\".\"is_system\" = false) OR (\"role\".\"verein_id\" IS NULL)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.role_permission": {
+      "name": "role_permission",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "permission": {
+          "name": "permission",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "role_permission_verein_id_verein_id_fk": {
+          "name": "role_permission_verein_id_verein_id_fk",
+          "tableFrom": "role_permission",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "role_permission_role_id_role_id_fk": {
+          "name": "role_permission_role_id_role_id_fk",
+          "tableFrom": "role_permission",
+          "tableTo": "role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "role_permission_unique": {
+          "name": "role_permission_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "role_id",
+            "permission"
+          ]
+        }
+      },
+      "policies": {
+        "role_permission_tenant_or_system": {
+          "name": "role_permission_tenant_or_system",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id IS NULL OR verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.verein_user_role": {
+      "name": "verein_user_role",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "verein_user_id": {
+          "name": "verein_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mannschaft_id": {
+          "name": "mannschaft_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "verein_user_role_verein_id_verein_id_fk": {
+          "name": "verein_user_role_verein_id_verein_id_fk",
+          "tableFrom": "verein_user_role",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "verein_user_role_verein_user_id_verein_user_id_fk": {
+          "name": "verein_user_role_verein_user_id_verein_user_id_fk",
+          "tableFrom": "verein_user_role",
+          "tableTo": "verein_user",
+          "columnsFrom": [
+            "verein_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "verein_user_role_role_id_role_id_fk": {
+          "name": "verein_user_role_role_id_role_id_fk",
+          "tableFrom": "verein_user_role",
+          "tableTo": "role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "verein_user_role_mannschaft_id_mannschaft_id_fk": {
+          "name": "verein_user_role_mannschaft_id_mannschaft_id_fk",
+          "tableFrom": "verein_user_role",
+          "tableTo": "mannschaft",
+          "columnsFrom": [
+            "mannschaft_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "verein_user_role_unique": {
+          "name": "verein_user_role_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_user_id",
+            "role_id",
+            "mannschaft_id"
+          ]
+        }
+      },
+      "policies": {
+        "verein_user_role_tenant": {
+          "name": "verein_user_role_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.person_user_link": {
+      "name": "person_user_link",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "person_id": {
+          "name": "person_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "person_user_link_verein_id_verein_id_fk": {
+          "name": "person_user_link_verein_id_verein_id_fk",
+          "tableFrom": "person_user_link",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "person_user_link_person_id_person_id_fk": {
+          "name": "person_user_link_person_id_person_id_fk",
+          "tableFrom": "person_user_link",
+          "tableTo": "person",
+          "columnsFrom": [
+            "person_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "person_user_link_user_id_user_id_fk": {
+          "name": "person_user_link_user_id_user_id_fk",
+          "tableFrom": "person_user_link",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "person_user_link_person_unique": {
+          "name": "person_user_link_person_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "person_id"
+          ]
+        },
+        "person_user_link_user_unique": {
+          "name": "person_user_link_user_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "user_id"
+          ]
+        }
+      },
+      "policies": {
+        "person_user_link_tenant": {
+          "name": "person_user_link_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "logto_sub": {
+          "name": "logto_sub",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "default_locale": {
+          "name": "default_locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'de'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_logto_sub_unique": {
+          "name": "user_logto_sub_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "logto_sub"
+          ]
+        }
+      },
+      "policies": {
+        "user_via_verein": {
+          "name": "user_via_verein",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "EXISTS (\n        SELECT 1 FROM verein_user vu\n        WHERE vu.user_id = id\n        AND vu.verein_id = current_setting('app.current_verein', true)::uuid\n      )",
+          "withCheck": "true"
+        }
+      },
+      "checkConstraints": {
+        "user_locale_check": {
+          "name": "user_locale_check",
+          "value": "\"user\".\"default_locale\" in ('de','en')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.verein_user": {
+      "name": "verein_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "verein_user_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "verein_user_verein_id_verein_id_fk": {
+          "name": "verein_user_verein_id_verein_id_fk",
+          "tableFrom": "verein_user",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "verein_user_user_id_user_id_fk": {
+          "name": "verein_user_user_id_user_id_fk",
+          "tableFrom": "verein_user",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "verein_user_unique": {
+          "name": "verein_user_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "user_id"
+          ]
+        }
+      },
+      "policies": {
+        "verein_user_tenant": {
+          "name": "verein_user_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.external_verein": {
+      "name": "external_verein",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "verein_id": {
+          "name": "verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone": {
+          "name": "contact_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "promoted_to_verein_id": {
+          "name": "promoted_to_verein_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "external_verein_verein_id_verein_id_fk": {
+          "name": "external_verein_verein_id_verein_id_fk",
+          "tableFrom": "external_verein",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "external_verein_promoted_to_verein_id_verein_id_fk": {
+          "name": "external_verein_promoted_to_verein_id_verein_id_fk",
+          "tableFrom": "external_verein",
+          "tableTo": "verein",
+          "columnsFrom": [
+            "promoted_to_verein_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "external_verein_name_per_tenant": {
+          "name": "external_verein_name_per_tenant",
+          "nullsNotDistinct": false,
+          "columns": [
+            "verein_id",
+            "name"
+          ]
+        }
+      },
+      "policies": {
+        "external_verein_tenant": {
+          "name": "external_verein_tenant",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "verein_id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "verein_id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.verein": {
+      "name": "verein",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locale_default": {
+          "name": "locale_default",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'de'"
+        },
+        "settings": {
+          "name": "settings",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "verein_slug_unique": {
+          "name": "verein_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "policies": {
+        "verein_self": {
+          "name": "verein_self",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "commons_app"
+          ],
+          "using": "id = current_setting('app.current_verein', true)::uuid",
+          "withCheck": "id = current_setting('app.current_verein', true)::uuid"
+        }
+      },
+      "checkConstraints": {
+        "verein_locale_check": {
+          "name": "verein_locale_check",
+          "value": "\"verein\".\"locale_default\" in ('de','en')"
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {
+    "public.mannschaft_kind": {
+      "name": "mannschaft_kind",
+      "schema": "public",
+      "values": [
+        "kampfmannschaft",
+        "reserve",
+        "nachwuchs",
+        "sonstige"
+      ]
+    },
+    "public.guardian_relation": {
+      "name": "guardian_relation",
+      "schema": "public",
+      "values": [
+        "mother",
+        "father",
+        "guardian",
+        "other"
+      ]
+    },
+    "public.mannschaft_membership_kind": {
+      "name": "mannschaft_membership_kind",
+      "schema": "public",
+      "values": [
+        "player",
+        "staff"
+      ]
+    },
+    "public.person_status": {
+      "name": "person_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "inactive"
+      ]
+    },
+    "public.role_scope": {
+      "name": "role_scope",
+      "schema": "public",
+      "values": [
+        "verein",
+        "mannschaft"
+      ]
+    },
+    "public.verein_user_status": {
+      "name": "verein_user_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "suspended"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

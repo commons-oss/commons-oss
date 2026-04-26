@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: commons-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: commons
+    ports:
+      # 5433 on host to avoid collisions with other local Postgres instances.
+      - "5433:5432"
+    volumes:
+      - commons_pgdata:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d commons"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Optional: Logto for local auth.
+  # Off by default — start with: docker compose --profile logto up -d
+  logto:
+    image: svhd/logto:latest
+    container_name: commons-logto
+    profiles: ["logto"]
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: postgres://commons_admin:commons_admin@postgres:5432/commons_logto
+      ENDPOINT: http://localhost:3001
+      ADMIN_ENDPOINT: http://localhost:3002
+      PORT: 3001
+      ADMIN_PORT: 3002
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+
+volumes:
+  commons_pgdata:

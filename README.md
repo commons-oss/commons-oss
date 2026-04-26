@@ -31,7 +31,13 @@ A pnpm + Turborepo monorepo.
 commons-oss/
 ├── apps/                          # products (none yet)
 ├── packages/
-│   └── brand/                     # @commons-oss/brand — logo, color tokens, typography
+│   ├── brand/                     # @commons-oss/brand — logo, color tokens, typography
+│   ├── config-eslint/             # shared ESLint flat config
+│   ├── config-tsconfig/           # shared TS configs
+│   └── db/                        # @commons-oss/db — Drizzle schema, RLS, migrations, seeds
+├── docker/postgres-init/          # local Postgres role + grant bootstrap
+├── docker-compose.yml             # local Postgres (and optional Logto)
+├── .env.example                   # local dev env template
 ├── BRAND.md                       # canonical brand guidelines
 ├── CLAUDE.md                      # agent handover for brand work
 ├── CHANGELOG.md
@@ -41,11 +47,40 @@ commons-oss/
 
 ## Getting started
 
-Requires Node 20+ and pnpm 10+.
+Requires Node 20+, pnpm 10+, and Docker.
 
 ```bash
 pnpm install
-pnpm build
+cp .env.example .env.local
+docker compose up -d
+pnpm db:migrate && pnpm db:seed
+```
+
+That gives you a Postgres on `localhost:5433` with two roles
+(`commons_admin` BYPASSRLS for migrations + seeds, `commons_app` for app
+traffic), the schema applied, system roles seeded, and a UFC
+Wettmannstätten dogfood tenant (including one Spielgemeinschaft with FC
+Eibiswald) ready to play with.
+
+Tenant isolation is enforced at the database via Row-Level Security.
+Application code never queries the DB directly — it goes through
+`withTenant(ctx, fn)` from `@commons-oss/db`, which sets a transaction-local
+GUC the RLS policies read. A missed `withTenant` returns zero rows, not
+another tenant's rows.
+
+To start Logto locally as well:
+
+```bash
+docker compose --profile logto up -d
+```
+
+Other useful scripts:
+
+```bash
+pnpm db:generate   # generate a new SQL migration after schema changes
+pnpm db:push       # fast schema sync for iteration (TTY required)
+pnpm db:reset      # drop + recreate the public schema (localhost only)
+pnpm test          # run all tests, including the RLS smoke test
 ```
 
 ## Stack defaults

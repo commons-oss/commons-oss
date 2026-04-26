@@ -47,7 +47,30 @@ export default [
       ],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
+      // Closed-default RLS hardening: importing `@commons-oss/db/internal`
+      // gets you the unscoped DB handle, bypassing `withTenant`. Allowed
+      // only in places that genuinely run before tenant context exists
+      // (auth callbacks, migrations, seeds). Override per-package when
+      // that's actually the case.
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@commons-oss/db/internal',
+              message:
+                'Use withTenant() from @commons-oss/db. /internal bypasses RLS — only auth callbacks, migrations, and seeds may import it (override this rule there).',
+            },
+          ],
+        },
+      ],
     },
+  },
+  {
+    // The db package itself + seed scripts are allowed to reach into the
+    // unscoped client. They need it to build withTenant in the first place.
+    files: ['**/src/client.ts', '**/src/internal.ts', '**/src/migrate.ts', '**/src/seed/**'],
+    rules: { 'no-restricted-imports': 'off' },
   },
   {
     files: ['**/*.{js,mjs,cjs}'],

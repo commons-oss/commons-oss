@@ -31,9 +31,15 @@ Ein pnpm + Turborepo Monorepo.
 commons-oss/
 ├── apps/                          # Produkte (noch keine)
 ├── packages/
-│   └── brand/                     # @commons-oss/brand — Logo, Farbtokens, Typografie
+│   ├── brand/                     # @commons-oss/brand — Logo, Farbtokens, Typografie
+│   ├── config-eslint/             # Geteilte ESLint-Flat-Config
+│   ├── config-tsconfig/           # Geteilte TS-Configs
+│   └── db/                        # @commons-oss/db — Drizzle-Schema, RLS, Migrations, Seeds
+├── docker/postgres-init/          # Lokales Postgres-Bootstrap (Rollen + Grants)
+├── docker-compose.yml             # Lokales Postgres (optional Logto)
+├── .env.example                   # Vorlage für lokale Env-Variablen
 ├── BRAND.md                       # Verbindliche Brand-Guidelines
-├── CLAUDE.md                      # Agent-Handover für Brand-Arbeit
+├── CLAUDE.md                      # Agent-Handover
 ├── CHANGELOG.md
 ├── LICENSE                        # AGPL-3.0-or-later
 └── README.md
@@ -41,11 +47,40 @@ commons-oss/
 
 ## Erste Schritte
 
-Benötigt Node 20+ und pnpm 10+.
+Benötigt Node 20+, pnpm 10+ und Docker.
 
 ```bash
 pnpm install
-pnpm build
+cp .env.example .env.local
+docker compose up -d
+pnpm db:migrate && pnpm db:seed
+```
+
+Damit läuft ein Postgres auf `localhost:5433` mit zwei Rollen
+(`commons_admin` BYPASSRLS für Migrations + Seeds, `commons_app` für den
+App-Traffic), das Schema ist angewendet, die System-Rollen sind geseedet,
+und ein UFC-Wettmannstätten-Dogfood-Mandant (inklusive einer
+Spielgemeinschaft mit FC Eibiswald) ist startklar.
+
+Mandanten-Trennung wird in der Datenbank über Row-Level Security
+erzwungen. App-Code greift nie direkt auf die DB zu, sondern immer über
+`withTenant(ctx, fn)` aus `@commons-oss/db`. Diese Funktion setzt eine
+transaktionslokale GUC, die die RLS-Policies lesen. Vergisst man
+`withTenant`, kommen null Zeilen zurück, nicht die eines anderen Mandanten.
+
+Logto lokal mitstarten:
+
+```bash
+docker compose --profile logto up -d
+```
+
+Weitere nützliche Scripts:
+
+```bash
+pnpm db:generate   # neue SQL-Migration nach Schema-Änderung
+pnpm db:push       # schnelle Schema-Angleichung (TTY nötig)
+pnpm db:reset      # Public-Schema droppen + neu anlegen (nur localhost)
+pnpm test          # alle Tests inkl. RLS-Smoke-Test
 ```
 
 ## Stack-Defaults
@@ -58,6 +93,7 @@ Für neue Apps in `apps/*`:
 - shadcn/ui + Tailwind CSS
 - next-intl (Standard-Locale `de`, zusätzlich `en`)
 - Self-hostbar via Docker, optional als Managed-Variante auf Vercel deploybar
+- Mandanten-Trennung über Postgres Row-Level Security (siehe oben)
 
 ## Brand
 
