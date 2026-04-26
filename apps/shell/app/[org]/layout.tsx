@@ -35,9 +35,40 @@ export default async function OrgLayout({ children, params }: Props) {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      <aside style={{ width: 240, padding: 16, borderRight: "1px solid #eee" }}>
-        <div style={{ fontWeight: 600, marginBottom: 16 }}>{t("appName")}</div>
-        <div style={{ fontSize: 12, color: "#666", marginBottom: 16 }}>{session.orgSlug}</div>
+      <aside
+        style={{ width: 240, padding: 16, borderRight: "1px solid var(--brand-border)" }}
+      >
+        <div
+          aria-label={t("appName")}
+          style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-hidden="true"
+          >
+            <g transform="translate(60 60)">
+              <circle cx="0" cy="-44" r="5" fill="var(--brand-slate)" />
+              <circle cx="31.1" cy="-31.1" r="5" fill="var(--brand-slate)" />
+              <circle cx="44" cy="0" r="5" fill="var(--brand-slate)" />
+              <circle cx="31.1" cy="31.1" r="5" fill="var(--brand-slate)" />
+              <circle cx="0" cy="44" r="5" fill="var(--brand-slate)" />
+              <circle cx="-31.1" cy="31.1" r="5" fill="var(--brand-slate)" />
+              <circle cx="-44" cy="0" r="5" fill="var(--brand-slate)" />
+              <circle cx="-31.1" cy="-31.1" r="5" fill="var(--brand-slate)" />
+              <circle cx="0" cy="0" r="7.5" fill="var(--brand-forest-bright)" />
+            </g>
+          </svg>
+          <span style={{ fontWeight: 500, color: "var(--brand-slate)" }}>
+            Commons{" "}
+            <span style={{ color: "var(--brand-mute)", letterSpacing: "0.05em" }}>OSS</span>
+          </span>
+        </div>
+        <div style={{ fontSize: 12, color: "var(--brand-mute)", marginBottom: 16 }}>
+          {session.orgSlug}
+        </div>
         <nav>
           {navItems.length === 0 ? (
             <div style={{ fontSize: 12, color: "#999" }}>{t("noModules")}</div>

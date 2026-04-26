@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Commons OSS">
+  <title>Commons OSS</title>
+  <g transform="translate(16 16)">
+    <circle cx="0" cy="-11" r="2.5" fill="#1f2937"/>
+    <circle cx="7.8" cy="-7.8" r="2.5" fill="#1f2937"/>
+    <circle cx="11" cy="0" r="2.5" fill="#1f2937"/>
+    <circle cx="7.8" cy="7.8" r="2.5" fill="#1f2937"/>
+    <circle cx="0" cy="11" r="2.5" fill="#1f2937"/>
+    <circle cx="-7.8" cy="7.8" r="2.5" fill="#1f2937"/>
+    <circle cx="-11" cy="0" r="2.5" fill="#1f2937"/>
+    <circle cx="-7.8" cy="-7.8" r="2.5" fill="#1f2937"/>
+    <circle cx="0" cy="0" r="4.2" fill="#4a8a5f"/>
+  </g>
+</svg>
